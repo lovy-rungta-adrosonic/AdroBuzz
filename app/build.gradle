@@ -1,0 +1,68 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.adrosonic.adrobuzz"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        x86 {
+            ndk {
+                abiFilter "x86"
+            }
+        }
+        arm {
+            ndk {
+                abiFilters "armeabi"
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile "com.google.dagger:dagger:2.11"
+    compile 'com.github.Ilhasoft:data-binding-validator:1.0.0'
+    compile "com.android.support:cardview-v7:26.1.0"
+    compile "com.google.dagger:dagger:2.11"
+    compile "com.google.dagger:dagger-android:2.11"
+    compile "com.google.dagger:dagger-android-support:2.11"
+    compile 'com.microsoft.projectoxford:speechrecognition:1.2.2'
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.microsoft.projectoxford:speechrecognition:1.2.2'
+//    compile 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'
+    compile 'com.kailashdabhi:om-recorder:1.1.5'
+    compile 'com.android.support:support-v4:26.1.0'
+    compile 'com.android.support:support-annotations:26.1.0'
+    annotationProcessor "com.google.dagger:dagger-android-processor:2.11"
+    annotationProcessor "com.google.dagger:dagger-compiler:2.11"
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    annotationProcessor "com.google.dagger:dagger-compiler:2.11"
+    provided 'javax.annotation:javax.annotation-api:1.2'
+
+}
