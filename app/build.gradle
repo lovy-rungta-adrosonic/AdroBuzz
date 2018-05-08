@@ -20,19 +20,6 @@ android {
         enabled = true
     }
 
-    flavorDimensions "default"
-    productFlavors {
-        x86 {
-            ndk {
-                abiFilter "x86"
-            }
-        }
-        arm {
-            ndk {
-                abiFilters "armeabi"
-            }
-        }
-    }
 }
 
 dependencies {
@@ -51,11 +38,7 @@ dependencies {
     compile "com.google.dagger:dagger:2.11"
     compile "com.google.dagger:dagger-android:2.11"
     compile "com.google.dagger:dagger-android-support:2.11"
-    compile 'com.microsoft.projectoxford:speechrecognition:1.2.2'
     compile 'com.google.code.gson:gson:2.7'
-    compile 'com.microsoft.projectoxford:speechrecognition:1.2.2'
-//    compile 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'
-    compile 'com.kailashdabhi:om-recorder:1.1.5'
     compile 'com.android.support:support-v4:26.1.0'
     compile 'com.android.support:support-annotations:26.1.0'
     annotationProcessor "com.google.dagger:dagger-android-processor:2.11"

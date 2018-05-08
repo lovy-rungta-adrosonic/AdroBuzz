@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.AddInvitesContract;
 import com.adrosonic.adrobuzz.model.AddInvites;
 import com.adrosonic.adrobuzz.sync.api.Service;
@@ -23,14 +24,12 @@ import retrofit2.Response;
 
 public class AddInvitesInteractor implements AddInvitesContract.UseCase {
 
-    private static final String TAG = CreateConferenceInteractor.class.getSimpleName();
+    private static final String TAG = AddInvitesInteractor.class.getSimpleName();
     private final Service mService;
     private final AppExecutors mExecutors;
     private Context mContext;
 
     public AddInvitesInteractor(Context context,Service service) {
-//        RetrofitClient.getBaseURL(context, Environment.DEV);
-//        mService = RetrofitClient.getClient().create(Service.class);
         mService=service;
         mExecutors = new AppExecutors();
         mContext = context;
@@ -42,20 +41,20 @@ public class AddInvitesInteractor implements AddInvitesContract.UseCase {
             @Override
             public void run() {
 
-                mService.addInvites("AB-63",request).enqueue(new Callback<AddInvites>() {
+                String confId= PreferenceManager.getInstance(mContext).getConfID();
+
+                mService.addInvites(confId,request).enqueue(new Callback<AddInvites>() {
                     @Override
                     public void onResponse(Call<AddInvites> call, final Response<AddInvites> response) {
                         if (response.isSuccessful()) {
                             final AddInvites body = response.body();
                             Log.v(TAG, "addInvites: success: \n"+ body.getStatus());
-//                            mExecutors.diskIO().execute(new Runnable() {
-//                                @Override
-//                                public void run() {
-////                                    PreferenceManager.getInstance(mContext).setIsAdmin(true);
-////                                    PreferenceManager.getInstance(mContext).setConfID(body.getData());
-////                                    PreferenceManager.getInstance(mContext).setConfParams(request);
-//                                }
-//                            });
+                            mExecutors.diskIO().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    PreferenceManager.getInstance(mContext).setListOfInvitees(request);
+                                }
+                            });
                             mExecutors.mainThread().execute(new Runnable() {
                                 @Override
                                 public void run() {

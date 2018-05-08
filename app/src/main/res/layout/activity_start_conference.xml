@@ -157,36 +157,6 @@
             android:padding="8dp"
             android:layout_centerHorizontal="true"/>
 
-        <LinearLayout
-            android:id="@+id/add_invites_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/welcome_note"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:gravity="center"
-                android:text="Invite people to start conference."
-                android:textStyle="italic"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textColor="@color/colorPrimaryDark" />
-
-        </LinearLayout>
-
 
         <FrameLayout
             android:id="@+id/progressLayout"
@@ -208,6 +178,24 @@
 
         </FrameLayout>
 
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/progressLayout"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <include
+                android:id="@+id/emptyLayout"
+                layout="@layout/design_list_empty" />
+
+        </FrameLayout>
 
     </RelativeLayout>
 </layout>

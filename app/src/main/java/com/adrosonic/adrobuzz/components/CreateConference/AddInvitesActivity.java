@@ -158,6 +158,11 @@ public class AddInvitesActivity extends AppCompatActivity implements AddInvitesC
     }
 
     @Override
+    public void finishActivity() {
+        this.finish();
+    }
+
+    @Override
     public ArrayList<String> getListOfEmails() {
         return listOfEmails;
     }

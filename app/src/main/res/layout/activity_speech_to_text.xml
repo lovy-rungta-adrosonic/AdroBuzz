@@ -1,56 +1,183 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp" >
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <!--<variable-->
+        <!--name="user"-->
+        <!--type="com.adrosonic.adrobuzz.model.CreateConfRequest"/>-->
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/user"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:orientation="horizontal">
 
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Log off"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
 
-    <Button
-        android:id="@+id/startRecord"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="Record" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Conference"
+                android:textColor="@color/colorAccent"
+                android:textSize="25sp" />
 
-    <Button
-        android:id="@+id/stopRecord"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/startRecord"
-        android:text="Stop Record" />
-
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start S2T"
-        android:layout_alignParentRight="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Send"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
 
 
-    <Chronometer
-        android:id="@+id/chronometerTimer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="40sp"
-        android:textColor="@android:color/darker_gray"
-        android:layout_below="@+id/startRecord"
-        />
+        </LinearLayout>
 
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/chronometerTimer"
-        android:ems="10"
-        android:inputType="textMultiLine|textNoSuggestions"
-        android:textSize="15dp" />
+        <TextView
+            android:id="@+id/conf_subj"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user"
+            android:background="@color/colorAccent"
+            android:padding="8dp"
+            android:paddingLeft="16dp"
+            android:text="Subject"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-</RelativeLayout>
+        <ScrollView
+            android:id="@+id/wrap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/conf_subj"
+            android:layout_margin="16dp"
+            android:background="@color/light_gray"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/liveText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/conf_subj"
+                android:background="@color/light_gray"
+                android:text="Live Text..."
+                android:textAllCaps="false"
+                android:textColor="@color/red"
+                android:textSize="16sp" />
+
+        </ScrollView>
+
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/wrap"
+            android:layout_marginTop="16dp"
+            android:background="@color/dark_gray" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/startRecording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/wrap"
+            android:layout_centerHorizontal="true"
+            android:src="@android:drawable/ic_btn_speak_now"
+            app:backgroundTint="@color/colorPrimaryDark" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/stopRecording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/wrap"
+            android:layout_marginLeft="8dp"
+            android:src="@android:drawable/ic_delete"
+            app:backgroundTint="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/statusOfRecording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="34dp"
+            android:text="Start recording"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <Button
+            android:id="@+id/endConf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/button_background_red"
+            android:padding="8dp"
+            android:text="End Conference"
+            android:textColor="@color/white" />
+
+        <RelativeLayout
+            android:id="@+id/summaryLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/endConf"
+            android:layout_below="@+id/statusOfRecording"
+            android:layout_margin="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark"
+                android:gravity="center"
+                android:text="Conference Summary"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/summary"
+                android:background="@color/light_gray">
+
+                <TextView
+                    android:id="@+id/sttOutput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="14sp" />
+            </ScrollView>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</layout>

@@ -6,6 +6,10 @@ import android.content.SharedPreferences;
 import com.adrosonic.adrobuzz.model.CreateConfRequest;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Lovy on 24-04-2018.
  */
@@ -19,7 +23,7 @@ public class PreferenceManager {
     public static final String CONFERENCE_ID_EXISTS = "conference_id_exists";
     public static final String IS_ADMIN = "is_admin";
     public static final String CONF_PARAMS = "conf_params";
-
+    public static final String LIST_OF_INVITEES = "list_of_invites";
 
     private Context mContext;
 
@@ -111,7 +115,6 @@ public class PreferenceManager {
                     .apply();
 
         }
-
     }
 
     public String getConfID(){
@@ -134,7 +137,6 @@ public class PreferenceManager {
             sharedPreferences.edit()
                     .putString(CONF_PARAMS, json)
                     .apply();
-
         }
 
     }
@@ -151,5 +153,45 @@ public class PreferenceManager {
             return null;
         }
 
+    }
+
+    public void setListOfInvitees( ArrayList<String> listOfInvitees){
+        SharedPreferences sharedPreferences=preferences(mContext);
+        if(sharedPreferences!=null){
+            Gson gson = new Gson();
+
+            ArrayList<String> temporary= new ArrayList<>();
+            String temp = sharedPreferences.getString(LIST_OF_INVITEES,"");
+            String[] items =gson.fromJson(temp,String[].class);
+            if (items != null) {
+                List<String> listOfEmails= Arrays.asList(items);
+                temporary.addAll(listOfEmails);
+            }
+
+            temporary.addAll(listOfInvitees);
+            String json = gson.toJson(temporary);
+            sharedPreferences.edit()
+                    .putString(LIST_OF_INVITEES, json)
+                    .apply();
+        }
+
+    }
+
+    public ArrayList<String> getListOfInvitees(){
+        SharedPreferences sharedPreferences=preferences(mContext);
+        if(sharedPreferences!=null){
+            Gson gson = new Gson();
+            String json = sharedPreferences.getString(LIST_OF_INVITEES,"");
+            String[] items =gson.fromJson(json,String[].class);
+            if (items != null) {
+                List<String> listOfEmails= Arrays.asList(items);
+                return new ArrayList<>(listOfEmails);
+            }else{
+                return null;
+            }
+        }
+        else{
+            return null;
+        }
     }
 }

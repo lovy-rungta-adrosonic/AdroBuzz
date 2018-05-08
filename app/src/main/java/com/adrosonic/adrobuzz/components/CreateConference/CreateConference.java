@@ -182,10 +182,9 @@ public class CreateConference extends AppCompatActivity implements CreateConfere
 
     @Override
     public void showConfID(CreateConf confID) {
-//            Log.v(TAG, confID.getData());
         // API CALL complete and launch start conference screen
         Intent start = new Intent(getBaseContext(), StartConferenceActivity.class);
-        start.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        start.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(start);
     }
 

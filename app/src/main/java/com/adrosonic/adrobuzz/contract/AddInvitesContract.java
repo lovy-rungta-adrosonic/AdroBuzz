@@ -20,6 +20,8 @@ public interface AddInvitesContract {
 
         void showLoadingError(String message);
 
+        void finishActivity();
+
         ArrayList<String> getListOfEmails();
     }
 

@@ -43,6 +43,7 @@ public class AddInvitesPresenter implements AddInvitesContract.Presenter {
                         break;
                     case SUCCESS:
                         Log.v(TAG,"Success");
+                        view.finishActivity();
 //                        view.showConfID(resource.data);
                         break;
                     default:
