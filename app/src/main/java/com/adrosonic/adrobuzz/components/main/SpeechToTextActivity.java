@@ -1,6 +1,7 @@
 package com.adrosonic.adrobuzz.components.main;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
@@ -19,7 +20,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.adrosonic.adrobuzz.R;
@@ -51,18 +51,13 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
     MicrophoneRecognitionClient micClient = null;
     FinalResponseStatus isReceivedResponse = FinalResponseStatus.NotReceived;
     EditText _logText;
-    RadioGroup _radioGroup;
     Button _startButton;
     Button _startRecord, _stopRecord;
     Recorder recorder;
     private Chronometer chronometer;
-
     private int RECORD_AUDIO_REQUEST_CODE = 123;
-
     private boolean isRecording = false;
-
     public enum FinalResponseStatus {NotReceived, OK, Timeout}
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +75,6 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
                     .show();
         }
 
-        // setup the buttons
         final SpeechToTextActivity This = this;
         this._startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +95,6 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
                 }
             }
         });
-
 
         this._stopRecord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,17 +165,14 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
         if (!file.exists()) {
             file.mkdirs();
         }
-
         int num = 0;
         String filePath = root.getAbsolutePath() + "/AdroBuzzWAV/Audios/" +
                 "Buzz" + ".wav";
-
         File f = new File(filePath);
         while (f.exists()) {
             filePath = root.getAbsolutePath() + "/AdroBuzzWAV/Audios/Buzz" + (num++) + ".wav";
             f = new File(filePath);
         }
-
         return new File(filePath);
     }
 
@@ -194,7 +184,6 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
                         AudioFormat.CHANNEL_IN_MONO, 44100
                 )
         );
-
     }
 
     /**
@@ -203,9 +192,7 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
     private void StartButton_Click(View arg0) {
         this._startButton.setEnabled(false);
         this.m_waitSeconds = 200;
-
         this.LogRecognitionStart();
-
             if (null == this.dataClient) {
                     this.dataClient = SpeechRecognitionServiceFactory.createDataClient(
                             this,
@@ -216,30 +203,35 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
 
                 this.dataClient.setAuthenticationUri(this.getAuthenticationUri());
             }
-
             this.SendAudioHelper();
-
     }
 
     /**
      * Logs the recognition start.
      */
     private void LogRecognitionStart() {
-
-        this.WriteLine("\n Start speech recognition " + "\n");
-
+        this.WriteLine("Start speech recognition " + "\n");
     }
 
     private void SendAudioHelper() {
         RecognitionTask doDataReco = new RecognitionTask(this.dataClient);
-
+        Log.e("CHECKING","TASK CREATED");
         try {
+//            startAsyncTaskInParallel(doDataReco,m_waitSeconds, TimeUnit.SECONDS);
             doDataReco.execute().get(m_waitSeconds, TimeUnit.SECONDS);
         } catch (Exception e) {
             doDataReco.cancel(true);
             isReceivedResponse = FinalResponseStatus.Timeout;
         }
     }
+
+//    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+//    private void startAsyncTaskInParallel(RecognitionTask task, int m_waitSeconds, TimeUnit seconds) {
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+//            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        else
+//            task.execute();
+//    }
 
     public void onFinalResponseReceived(final RecognitionResult response) {
         boolean isFinalDicationMessage = SpeechRecognitionMode.LongDictation == SpeechRecognitionMode.LongDictation &&
@@ -263,9 +255,9 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
      * Called when a final response is received and its intent is parsed
      */
     public void onIntentReceived(final String payload) {
-        this.WriteLine("--- Intent received by onIntentReceived() ---");
-        this.WriteLine(payload);
-        this.WriteLine();
+//        this.WriteLine("--- Intent received by onIntentReceived() ---");
+//        this.WriteLine(payload);
+//        this.WriteLine();
     }
 
     public void onPartialResponseReceived(final String response) {
@@ -328,14 +320,6 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
      */
     private class RecognitionTask extends AsyncTask<Void, Void, Void> {
         DataRecognitionClient dataClient;
-        SpeechRecognitionMode recoMode;
-        String filename;
-//
-//        RecognitionTask(DataRecognitionClient dataClient, SpeechRecognitionMode recoMode, String filename) {
-//            this.dataClient = dataClient;
-//            this.recoMode = recoMode;
-//            this.filename = filename;
-//        }
 
         RecognitionTask(DataRecognitionClient dataClient) {
             this.dataClient = dataClient;
@@ -344,18 +328,8 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                // Note for wave files, we can just send data from the file right to the server.
-                // In the case you are not an audio file in wave format, and instead you have just
-                // raw data (for example audio coming over bluetooth), then before sending up any
-                // audio data, you must first send up an SpeechAudioFormat descriptor to describe
-                // the layout and format of your raw audio data via DataRecognitionClient's sendAudioFormat() method.
-                // String filename = recoMode == SpeechRecognitionMode.ShortPhrase ? "whatstheweatherlike.wav" : "batman.wav";
-//                InputStream fileStream = getAssets().open(filename);
-
-
-                File root = android.os.Environment.getExternalStorageDirectory();
-
-
+                Log.e("CHECKING","EXECUTING");
+             File root = android.os.Environment.getExternalStorageDirectory();
                 File dir = new File(root.getAbsolutePath() + "/AdroBuzzWAV/Audios/");
                 if(dir.exists()){
                     File[] files = dir.listFiles();
@@ -375,53 +349,33 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
                                 dataClient.sendAudio(buffer, bytesRead);
                             }
                         } while (bytesRead > 0);
+//                        if (file.exists()) {
+//                            if (file.delete()) {
+//                                Log.e("CHECKING","file Deleted :"+file.getName());
+//                            } else {
+//                               Log.e("CHECKING","file not Deleted :"+file.getName() );
+//                            }
+//                        }
+
                     }
                 }
-//           String filePath = root.getAbsolutePath() + "/AdroBuzzWAV/Audios/" +
-//                        "Buzz" + ".wav";
-//
-//                File file = new File(filePath);
-
-//                FileInputStream fileStream = new FileInputStream(file);
-//                int bytesRead = 0;
-//                byte[] buffer = new byte[1024];
-//
-//                do {
-//                    // Get  Audio data to send into byte buffer.
-//                    bytesRead = fileStream.read(buffer);
-//
-//                    if (bytesRead > -1) {
-//                        // Send of audio data to service.
-//                        dataClient.sendAudio(buffer, bytesRead);
-//                    }
-//                } while (bytesRead > 0);
 
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
             } finally {
                 dataClient.endAudio();
             }
-
             return null;
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void getPermissionToRecordAudio() {
-        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
-        // checking the build version since Context.checkSelfPermission(...) is only available
-        // in Marshmallow
-        // 2) Always check for permission (even if permission has already been granted)
-        // since the user can revoke permissions at any time through Settings
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-            // The permission is NOT already granted.
-            // Check if the user has been asked about this permission already and denied
-            // it. If so, we want to give more explanation about why the permission is needed.
-            // Fire off an async request to actually get the permission
-            // This will show the standard permission request dialog UI
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     RECORD_AUDIO_REQUEST_CODE);
 
@@ -433,22 +387,17 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
     }
 
     // Callback with the request from calling requestPermissions(...)
-    // Callback with the request from calling requestPermissions(...)
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        // Make sure it's our original READ_CONTACTS request
         if (requestCode == RECORD_AUDIO_REQUEST_CODE) {
             if (grantResults.length == 3 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED
                     && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-
-//                Toast.makeText(this, "Record Audio permission granted", Toast.LENGTH_SHORT).show();
                 start();
-
             } else {
                 Toast.makeText(this, "You must give permissions to use this app. App is exiting.", Toast.LENGTH_SHORT).show();
                 finishAffinity();
@@ -474,6 +423,21 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
                 chronometer.stop();
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 isRecording = false;
+
+//                LogRecognitionStart();
+//
+//                if (null == this.dataClient) {
+//                    this.dataClient = SpeechRecognitionServiceFactory.createDataClient(
+//                            this,
+//                            SpeechRecognitionMode.LongDictation,
+//                            this.getDefaultLocale(),
+//                            this,
+//                            this.getPrimaryKey());
+//
+//                    Log.e("CHECKING","inside data client");
+//                    this.dataClient.setAuthenticationUri(this.getAuthenticationUri());
+//                }
+//                this.SendAudioHelper();
                 start();
             }
 
@@ -489,7 +453,7 @@ public class SpeechToTextActivity extends AppCompatActivity implements ISpeechRe
                     @Override
                     public void onAudioChunkPulled(AudioChunk audioChunk) {
 //                        animateVoice((float) (audioChunk.maxAmplitude() / 200.0));
-                        Log.e("CHECKING", "CHUNK PULLED");
+//                        Log.e("CHECKING", "CHUNK PULLED");
                     }
                 }), file());
 
