@@ -6,7 +6,13 @@ import com.adrosonic.adrobuzz.components.CreateConference.CreateConference;
 import com.adrosonic.adrobuzz.components.CreateConference.CreateConferencePresenter;
 import com.adrosonic.adrobuzz.components.CreateConference.StartConferenceActivity;
 import com.adrosonic.adrobuzz.components.CreateConference.StartConferencePresenter;
+import com.adrosonic.adrobuzz.components.JoinConference.JoinConference;
+import com.adrosonic.adrobuzz.components.JoinConference.JoinConferencePresenter;
+import com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextActivity;
+import com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextPresenter;
+import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.components.main.MainActivity;
+import com.adrosonic.adrobuzz.components.main.SplashScreenActivity;
 import com.adrosonic.adrobuzz.sync.api.SyncModule;
 
 import javax.inject.Singleton;
@@ -25,6 +31,8 @@ import dagger.Component;
         SyncModule.class})
 public interface AppComponent {
 
+    void inject(App app);
+
     void inject(MainActivity activity);
 
     void inject(CreateConference activity);
@@ -39,6 +47,12 @@ public interface AppComponent {
     //
     void inject(AddInvitesPresenter presenter);
 
+    void inject(SpeechToTextActivity activity);
+    //
+    void inject(SpeechToTextPresenter presenter);
 
+    void inject(JoinConference activity);
+    //
+    void inject(JoinConferencePresenter presenter);
 
 }

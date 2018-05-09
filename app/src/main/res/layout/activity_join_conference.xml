@@ -5,6 +5,11 @@
 
     <data>
         <import type="android.view.View" />
+
+        <variable
+            name="joinConf"
+            type="Boolean" />
+
     </data>
 
 <RelativeLayout
@@ -117,6 +122,21 @@
 
         </RelativeLayout>
     </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/progressLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#33000000"
+        android:visibility="@{joinConf ? View.VISIBLE : View.GONE}">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
 
 </RelativeLayout>
 </layout>

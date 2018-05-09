@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -23,18 +22,13 @@ import com.adrosonic.adrobuzz.contract.CreateConferenceContract;
 import com.adrosonic.adrobuzz.databinding.ActivityCreateConferenceBinding;
 import com.adrosonic.adrobuzz.model.CreateConf;
 import com.adrosonic.adrobuzz.model.CreateConfRequest;
-import com.adrosonic.adrobuzz.model.Hero;
 import com.adrosonic.adrobuzz.model.User;
 import com.adrosonic.adrobuzz.sync.api.Service;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -77,7 +71,6 @@ public class CreateConference extends AppCompatActivity implements CreateConfere
 
         Service service = retrofit.create(Service.class);
         mPresenter = new CreateConferencePresenter(this,this,service);
-        setPresenter(mPresenter);
 
         mBinding.setCreateConf(false);
         final View view = mBinding.getRoot();
@@ -162,11 +155,6 @@ public class CreateConference extends AppCompatActivity implements CreateConfere
 
     @Override
     public void onValidationError() {
-
-    }
-
-    @Override
-    public void setPresenter(CreateConferenceContract.Presenter presenter) {
 
     }
 

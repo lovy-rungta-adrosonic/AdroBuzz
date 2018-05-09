@@ -7,9 +7,13 @@
 
         <import type="android.view.View" />
 
-        <!--<variable-->
-            <!--name="user"-->
-            <!--type="com.adrosonic.adrobuzz.model.CreateConfRequest"/>-->
+        <variable
+            name="status"
+            type="Boolean"/>
+
+        <variable
+            name="statusLoading"
+            type="Boolean" />
 
         <variable
             name="presenter"
@@ -150,16 +154,15 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
             android:background="@drawable/button_background"
-            android:enabled="false"
+            android:visibility="@{status ? View.VISIBLE : View.GONE}"
             android:text="@string/start_conference"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:padding="8dp"
             android:layout_centerHorizontal="true"/>
 
-
         <FrameLayout
-            android:id="@+id/progressLayout"
+            android:id="@+id/addLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -182,7 +185,7 @@
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/progressLayout"
+            android:layout_below="@+id/addLayout"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp">
 
@@ -195,6 +198,21 @@
                 android:id="@+id/emptyLayout"
                 layout="@layout/design_list_empty" />
 
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/progressLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{statusLoading ? View.VISIBLE : View.GONE}"
+            >
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
         </FrameLayout>
 
     </RelativeLayout>

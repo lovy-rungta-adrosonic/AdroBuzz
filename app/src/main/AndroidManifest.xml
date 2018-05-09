@@ -47,7 +47,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".components.main.SpeechToTextActivity"></activity>
+        <activity android:name=".components.Speech2Text.SpeechToTextActivity"></activity>
     </application>
 
 </manifest>

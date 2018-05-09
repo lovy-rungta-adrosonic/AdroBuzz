@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.adrosonic.adrobuzz.R;
+import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.contract.AddInvitesContract;
 import com.adrosonic.adrobuzz.databinding.ActivityAddInvitesBinding;
@@ -60,8 +61,7 @@ public class AddInvitesActivity extends AppCompatActivity implements AddInvitesC
         ((App) getApplication()).getAppComponent().inject(this);
 
         Service service = retrofit.create(Service.class);
-        mPresenter = new AddInvitesPresenter(this,this,service);
-        setPresenter(mPresenter);
+        mPresenter = new AddInvitesPresenter(this, this, service);
 
         counter = 0;
     }
@@ -77,9 +77,15 @@ public class AddInvitesActivity extends AppCompatActivity implements AddInvitesC
                 EditText email = findViewById(R.id.email);
                 String emailText = email.getText().toString();
                 if (emailValidator(emailText)) {
-                    emailLayout.setError(null);
-                    emailLayout.setErrorEnabled(false);
-                    validationSuccess = true;
+                    if (isEmailAlreadyAdded(emailText)) {
+                        emailLayout.setErrorEnabled(true);
+                        emailLayout.setError(getResources().getString(R.string.email_already_added));
+                        validationSuccess = false;
+                    } else {
+                        emailLayout.setError(null);
+                        emailLayout.setErrorEnabled(false);
+                        validationSuccess = true;
+                    }
                 } else {
                     emailLayout.setErrorEnabled(true);
                     emailLayout.setError(getResources().getString(R.string.invalid_email));
@@ -116,7 +122,7 @@ public class AddInvitesActivity extends AppCompatActivity implements AddInvitesC
 
             case R.id.send_invites:
 
-                listOfEmails= new ArrayList<>();
+                listOfEmails = new ArrayList<>();
 
                 for (int i = 0; i < container.getChildCount(); i++) {
                     View row = container.getChildAt(i);
@@ -134,17 +140,17 @@ public class AddInvitesActivity extends AppCompatActivity implements AddInvitesC
         }
     }
 
+    private boolean isEmailAlreadyAdded(String emailText) {
+        ArrayList<String> listOfEmail = PreferenceManager.getInstance(this).getListOfInvitees();
+        return listOfEmail.contains(emailText);
+    }
+
     public boolean emailValidator(String email) {
         if (TextUtils.isEmpty(email)) {
             return false;
         } else {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
         }
-    }
-
-    @Override
-    public void setPresenter(AddInvitesContract.Presenter presenter) {
-
     }
 
     @Override

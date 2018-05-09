@@ -8,16 +8,15 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.components.main.App;
-import com.adrosonic.adrobuzz.contract.CreateConferenceContract;
+import com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextActivity;
 import com.adrosonic.adrobuzz.contract.StartConferenceContract;
 import com.adrosonic.adrobuzz.databinding.ActivityStartConferenceBinding;
-import com.adrosonic.adrobuzz.model.CreateConfRequest;
-import com.adrosonic.adrobuzz.model.User;
 import com.adrosonic.adrobuzz.sync.api.Service;
 
 import java.util.ArrayList;
@@ -46,6 +45,9 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
     LinearLayout mLayout;
     EmailListAdapter adapter;
 
+    @BindView(R.id.start_conference)
+    Button startConference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +57,9 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
         ((App) getApplication()).getAppComponent().inject(this);
         Service service = retrofit.create(Service.class);
         mPresenter = new StartConferencePresenter(this, this, service);
-        setPresenter(mPresenter);
 
+        mBinding.setStatus(false);
+        mBinding.setStatusLoading(false);
         mBinding.setPresenter((StartConferencePresenter) mPresenter);
         unbinder = ButterKnife.bind(this, view);
 
@@ -78,12 +81,17 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
         setUpListVisibility();
     }
 
-    @OnClick({R.id.add_invites})
+    @OnClick({R.id.add_invites, R.id.start_conference})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_invites:
                 Intent start = new Intent(getBaseContext(), AddInvitesActivity.class);
                 startActivity(start);
+                break;
+
+            case R.id.start_conference:
+                mBinding.setStatusLoading(true);
+                mPresenter.startConference();
                 break;
 
             default:
@@ -93,18 +101,19 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
     }
 
     @Override
-    public void setPresenter(StartConferenceContract.Presenter presenter) {
-
-    }
-
-    @Override
     public void setLoadingIndicator(boolean active) {
-
+        mBinding.setStatusLoading(active);
     }
 
     @Override
     public void showLoadingError(String message) {
 
+    }
+
+    @Override
+    public void conferenceStarted() {
+        Intent speechToText = new Intent(getBaseContext(), SpeechToTextActivity.class);
+        startActivity(speechToText);
     }
 
     private void setUpListVisibility() {
@@ -115,10 +124,13 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
                 mLayout.setVisibility(View.INVISIBLE);
                 mRecyclerView.setVisibility(View.VISIBLE);
                 mRecyclerView.setAdapter(adapter);
+                mBinding.setStatus(true);
+
 
             } else {
                 mLayout.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.INVISIBLE);
+                mBinding.setStatus(false);
             }
         }
     }

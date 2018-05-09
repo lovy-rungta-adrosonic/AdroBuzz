@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.create_conference,R.id.join_conference,R.id.speechToText})
+    @OnClick({R.id.create_conference,R.id.join_conference})
     public void onClick(View v) {
        switch(v.getId()){
            case R.id.create_conference:
@@ -37,11 +37,6 @@ public class MainActivity extends AppCompatActivity {
            case R.id.join_conference:
                Intent join = new Intent(getBaseContext(), JoinConference.class);
                startActivity(join);
-               break;
-
-           case R.id.speechToText:
-               Intent speechToText = new Intent(getBaseContext(), SpeechToTextActivity.class);
-               startActivity(speechToText);
                break;
        }
     }

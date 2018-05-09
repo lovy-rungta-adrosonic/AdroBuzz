@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public interface AddInvitesContract {
 
     interface View {
-        void setPresenter(Presenter presenter);
 
         void setLoadingIndicator(boolean active);
 
@@ -26,11 +25,6 @@ public interface AddInvitesContract {
     }
 
     interface Presenter {
-        //        String getConfID();
-//        String getVenue();
-//        String getEmailID();
-//        String getUserName();
-//        String getDateTime(int index);
         void addInvites();
     }
 

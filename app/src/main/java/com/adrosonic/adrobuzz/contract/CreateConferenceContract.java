@@ -4,10 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.adrosonic.adrobuzz.model.CreateConf;
 import com.adrosonic.adrobuzz.model.CreateConfRequest;
-import com.adrosonic.adrobuzz.model.Hero;
 import com.adrosonic.adrobuzz.sync.network.Resource;
-
-import java.util.List;
 
 /**
  * Created by Lovy on 20-04-2018.
@@ -16,7 +13,6 @@ import java.util.List;
 public interface CreateConferenceContract {
 
     interface View{
-        void setPresenter(Presenter presenter);
         void setLoadingIndicator(boolean active);
         void showLoadingError(String message);
         void showConfID(CreateConf confID);
