@@ -35,7 +35,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     case 1:
                         boolean isAdmin = PreferenceManager.getInstance(SplashScreenActivity.this).getIsAdmin();
                         String id = PreferenceManager.getInstance(SplashScreenActivity.this).getConfID();
-                        if (isAdmin && id.isEmpty()) {
+                        if (isAdmin && !id.isEmpty()) {
                             startActivity(new Intent(SplashScreenActivity.this, StartConferenceActivity.class));
                         } else {
                             startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
@@ -51,6 +51,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                         break;
 
                     default:
+                        startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
                         break;
                 }
                 finish();

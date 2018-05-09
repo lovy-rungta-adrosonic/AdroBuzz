@@ -58,43 +58,46 @@ public class App extends Application {
         appComponent.inject(this);
         final Service service = retrofit.create(Service.class);
 
-       SpeechToTextInteractor mInteractor = new SpeechToTextInteractor(getApplicationContext(),service);
-       mInteractor .getConferenceStatus(new SpeechToTextContract.UseCase.Completion() {
-            @Override
-            public void didReceiveResource(Resource<ConferenceStatus> resource) {
+        String confId = PreferenceManager.getInstance(getApplicationContext()).getConfID();
+        if(!confId.isEmpty()){
+            SpeechToTextInteractor mInteractor = new SpeechToTextInteractor(getApplicationContext(),service);
+            mInteractor .getConferenceStatus(new SpeechToTextContract.UseCase.Completion() {
+                @Override
+                public void didReceiveResource(Resource<ConferenceStatus> resource) {
 
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case ERROR:
-                        break;
-                    case SUCCESS:
-                        Data data = resource.data.getData();
-                        if(data!=null){
-                            switch (data.getId()) {
-                                case 1:
-                                    Log.e("APP","status is 1");
-                                    PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(1);
-                                    break;
-                                case 2:
-                                    Log.e("APP","status is 2");
-                                    PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(2);
-                                    break;
-                                case 3:
-                                    Log.e("APP","status is 3");
-                                    PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(3);
-                                    break;
-                                default:
-                                    break;
+                    switch (resource.status) {
+                        case LOADING:
+                            break;
+                        case ERROR:
+                            break;
+                        case SUCCESS:
+                            Data data = resource.data.getData();
+                            if(data!=null){
+                                switch (data.getId()) {
+                                    case 1:
+                                        Log.e("APP","status is 1");
+                                        PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(1);
+                                        break;
+                                    case 2:
+                                        Log.e("APP","status is 2");
+                                        PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(2);
+                                        break;
+                                    case 3:
+                                        Log.e("APP","status is 3");
+                                        PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(3);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }else{
+                                PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(0);
                             }
-                        }else{
-                            PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(0);
-                        }
-                        break;
-                    default:
-                        break;
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }
