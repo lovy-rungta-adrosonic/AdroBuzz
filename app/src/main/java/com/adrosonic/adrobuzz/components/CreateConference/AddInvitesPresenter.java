@@ -30,26 +30,31 @@ public class AddInvitesPresenter implements AddInvitesContract.Presenter {
     public void addInvites() {
         final ArrayList<String> request = view.getListOfEmails();
 
-        mInteractor.addInvites(request, new AddInvitesContract.UseCase.Completion() {
-            @Override
-            public void didReceiveResource(Resource<AddInvites> resource) {
-                view.setLoadingIndicator(false);
-                switch (resource.status) {
-                    case LOADING:
-                        view.setLoadingIndicator(true);
-                        break;
-                    case ERROR:
-                        view.showLoadingError(resource.message);
-                        break;
-                    case SUCCESS:
-                        Log.v(TAG,"Success");
-                        view.finishActivity();
+        if(request.size()>0){
+            mInteractor.addInvites(request, new AddInvitesContract.UseCase.Completion() {
+                @Override
+                public void didReceiveResource(Resource<AddInvites> resource) {
+                    view.setLoadingIndicator(false);
+                    switch (resource.status) {
+                        case LOADING:
+                            view.setLoadingIndicator(true);
+                            break;
+                        case ERROR:
+                            view.showLoadingError(resource.message);
+                            break;
+                        case SUCCESS:
+                            Log.v(TAG,"Success");
+                            view.finishActivity();
 //                        view.showConfID(resource.data);
-                        break;
-                    default:
-                        break;
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            view.setLoadingIndicator(false);
+            view.showLoadingError("Please add atleast one invite");
+        }
     }
 }

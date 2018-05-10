@@ -14,11 +14,16 @@ public interface SpeechToTextContract {
     interface View{
         void setLoadingIndicator(boolean active);
         void conferenceEnded();
+        void showError(String message);
+        void finalConfStatus(int status);
+        void confStatus(int status);
     }
 
     interface  Presenter{
         String getConfSubject();
         void endConference();
+        void getConferenceStatus();
+        void getConferenceStatusLogOut();
     }
 
     interface UseCase{

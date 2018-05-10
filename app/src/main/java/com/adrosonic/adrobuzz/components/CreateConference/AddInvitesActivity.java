@@ -1,8 +1,10 @@
 package com.adrosonic.adrobuzz.components.CreateConference;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
@@ -142,7 +145,11 @@ public class AddInvitesActivity extends AppCompatActivity implements AddInvitesC
 
     private boolean isEmailAlreadyAdded(String emailText) {
         ArrayList<String> listOfEmail = PreferenceManager.getInstance(this).getListOfInvitees();
-        return listOfEmail.contains(emailText);
+        if(listOfEmail!=null){
+            return listOfEmail.contains(emailText);
+        }else{
+            return false;
+        }
     }
 
     public boolean emailValidator(String email) {
@@ -160,7 +167,16 @@ public class AddInvitesActivity extends AppCompatActivity implements AddInvitesC
 
     @Override
     public void showLoadingError(String message) {
-
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
     }
 
     @Override

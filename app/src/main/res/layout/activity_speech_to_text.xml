@@ -11,6 +11,14 @@
         name="presenter"
         type="com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextPresenter"/>
 
+        <variable
+            name="editSummary"
+            type="Boolean"/>
+
+        <variable
+            name="status"
+            type="Boolean"/>
+
     </data>
 
     <RelativeLayout
@@ -26,32 +34,36 @@
             android:orientation="horizontal">
 
 
-            <TextView
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Log off"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:id="@+id/logout"
+                android:background="@android:color/transparent"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Conference"
+                android:text="Live Conference"
                 android:textColor="@color/colorAccent"
                 android:textSize="25sp" />
 
-            <TextView
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Send"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:id="@+id/send_mail"
+                android:background="@android:color/transparent"/>
 
         </LinearLayout>
 
@@ -73,8 +85,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/conf_subj"
-            android:layout_margin="16dp"
-            android:background="@color/light_gray"
+            android:layout_margin="8dp"
+            android:background="@drawable/border_two_dp"
             android:padding="4dp">
 
             <TextView
@@ -82,10 +94,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/conf_subj"
-                android:background="@color/light_gray"
                 android:text="Live Text..."
                 android:textAllCaps="false"
-                android:textColor="@color/red"
+                android:textColor="@color/dark_gray"
                 android:textSize="16sp" />
 
         </ScrollView>
@@ -96,7 +107,7 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_below="@+id/wrap"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:background="@color/dark_gray" />
 
         <android.support.design.widget.FloatingActionButton
@@ -116,7 +127,7 @@
             android:layout_below="@+id/wrap"
             android:layout_marginLeft="8dp"
             android:src="@android:drawable/ic_delete"
-            app:backgroundTint="@color/colorPrimaryDark" />
+            app:backgroundTint="@color/colorAccent" />
 
         <TextView
             android:id="@+id/statusOfRecording"
@@ -130,14 +141,13 @@
 
         <Button
             android:id="@+id/endConf"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="8dp"
-
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:background="@drawable/button_background_red"
             android:padding="8dp"
             android:text="End Conference"
@@ -149,7 +159,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/endConf"
             android:layout_below="@+id/statusOfRecording"
-            android:layout_margin="16dp"
+            android:layout_margin="8dp"
             android:orientation="vertical">
 
             <TextView
@@ -166,7 +176,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/summary"
-                android:background="@color/light_gray">
+                android:background="@drawable/border_two_dp"
+                android:padding="4dp"
+                >
 
                 <TextView
                     android:id="@+id/sttOutput"
@@ -174,9 +186,30 @@
                     android:layout_height="match_parent"
                     android:textAllCaps="false"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    />
             </ScrollView>
+
         </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/summaryLayout"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:visibility="@{editSummary ? View.VISIBLE : View.GONE}"
+            android:layout_margin="8dp">
+
+            <ImageView
+                android:id="@+id/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:padding="8dp"
+                app:srcCompat="@drawable/edit_pencil" />
+
+        </FrameLayout>
 
 
     </RelativeLayout>

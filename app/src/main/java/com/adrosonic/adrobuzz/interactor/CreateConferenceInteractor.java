@@ -5,24 +5,18 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
-import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.contract.CreateConferenceContract;
 import com.adrosonic.adrobuzz.model.CreateConf;
 import com.adrosonic.adrobuzz.model.CreateConfRequest;
-import com.adrosonic.adrobuzz.sync.api.RetrofitClient;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
-import com.adrosonic.adrobuzz.sync.network.Environment;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 /**
  * Created by Lovy on 20-04-2018.

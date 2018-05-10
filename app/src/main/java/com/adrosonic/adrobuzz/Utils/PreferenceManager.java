@@ -16,16 +16,17 @@ import java.util.List;
 
 public class PreferenceManager {
     private static final PreferenceManager ourInstance = new PreferenceManager();
-    public static final String PREFERENCE_NAME = "com.adrosonic.adrobuzz.Preferences";
+    private static final String PREFERENCE_NAME = "com.adrosonic.adrobuzz.Preferences";
 
-    public static final String PREF_BASE_URL = "Base URL";
-    public static final String CONFERENCE_ID = "conference_id";
-    public static final String CONFERENCE_ID_EXISTS = "conference_id_exists";
-    public static final String IS_ADMIN = "is_admin";
-    public static final String CONF_PARAMS = "conf_params";
-    public static final String LIST_OF_INVITEES = "list_of_invites";
-    public static final String IS_CONFERENCE_STARTED = "is_conference_started";
-    public static final String CONFERENCE_STATUS = "conference_status";
+    private static final String CONFERENCE_ID = "conference_id";
+    private static final String ADMIN_ENDED_CONFERENCE = "admin_ended_conference";
+    private static final String IS_ADMIN = "is_admin";
+    private static final String CONF_PARAMS = "conf_params";
+    private static final String LIST_OF_INVITEES = "list_of_invites";
+    private static final String IS_CONFERENCE_STARTED = "is_conference_started";
+    private static final String CONFERENCE_STATUS = "conference_status";
+    private static final String EMAIL_SENT = "email_sent";
+    private static final String CONFERENCE_SUMMARY = "conference_summary";
 
     private Context mContext;
 
@@ -42,26 +43,15 @@ public class PreferenceManager {
     public PreferenceManager() {
     }
 
-    public void setBaseURL(String baseURL) {
+    public void clearSharedPreferences(){
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             sharedPreferences.edit()
-                    .putString(PREF_BASE_URL, baseURL)
+                    .clear()
                     .apply();
-        }
-
-    }
-
-    public String getBaseURL() {
-        SharedPreferences sharedPreferences = preferences(mContext);
-
-        if (sharedPreferences != null) {
-            return sharedPreferences.getString(PREF_BASE_URL, "");
 
         }
-        return "";
     }
-
 
     public void setIsAdmin(boolean status) {
         SharedPreferences sharedPreferences = preferences(mContext);
@@ -85,21 +75,21 @@ public class PreferenceManager {
 
     }
 
-    public void setConfIDExists(boolean exists) {
+    public void setAdminEndedConference(boolean status) {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             sharedPreferences.edit()
-                    .putBoolean(CONFERENCE_ID_EXISTS, exists)
+                    .putBoolean(ADMIN_ENDED_CONFERENCE, status)
                     .apply();
 
         }
 
     }
 
-    public boolean getConfIDExists() {
+    public boolean getAdminEndedConference() {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
-            return sharedPreferences.getBoolean(CONFERENCE_ID_EXISTS, false);
+            return sharedPreferences.getBoolean(ADMIN_ENDED_CONFERENCE, false);
 
         } else {
             return false;
@@ -234,5 +224,47 @@ public class PreferenceManager {
         } else {
             return 0;
         }
+    }
+
+    public void setEmailSent(boolean status) {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            sharedPreferences.edit()
+                    .putBoolean(EMAIL_SENT, status)
+                    .apply();
+
+        }
+
+    }
+
+    public boolean getEmailSent() {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            return sharedPreferences.getBoolean(EMAIL_SENT, false);
+
+        } else {
+            return false;
+        }
+    }
+
+    public void setConferenceSummary(String summary) {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            sharedPreferences.edit()
+                    .putString(CONFERENCE_SUMMARY, summary)
+                    .apply();
+
+        }
+    }
+
+    public String getConferenceSummary() {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            return sharedPreferences.getString(CONFERENCE_SUMMARY, "");
+
+        } else {
+            return "";
+        }
+
     }
 }

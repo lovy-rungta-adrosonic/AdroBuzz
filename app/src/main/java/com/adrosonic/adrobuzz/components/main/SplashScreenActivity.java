@@ -24,18 +24,16 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        final int status = PreferenceManager.getInstance(this).getConferenceStatus();
-
         int SPLASH_TIME_OUT = 2000;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                final int status = PreferenceManager.getInstance(SplashScreenActivity.this).getConferenceStatus();
                 switch (status) {
                     case 1:
                         boolean isAdmin = PreferenceManager.getInstance(SplashScreenActivity.this).getIsAdmin();
                         String id = PreferenceManager.getInstance(SplashScreenActivity.this).getConfID();
-                        if (isAdmin && !id.isEmpty()) {
+                        if (isAdmin && !id.equals("")) {
                             startActivity(new Intent(SplashScreenActivity.this, StartConferenceActivity.class));
                         } else {
                             startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));

@@ -89,8 +89,6 @@ public class App extends Application {
                                     default:
                                         break;
                                 }
-                            }else{
-                                PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(0);
                             }
                             break;
                         default:

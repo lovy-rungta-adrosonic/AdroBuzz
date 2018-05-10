@@ -34,6 +34,9 @@ public interface Service {
     @GET("getConferenceStatus/{param}")
     Call<ConferenceStatus> getConferenceStatus(@Path("param") String id);
 
+    @GET("endConference/{param}")
+    Call<ConferenceStatus> endConference(@Path("param") String id);
+
 //    @POST("joinConference")
 //    Call<APIResponse> joinConference(@Body JoinConfRequest body);
 }

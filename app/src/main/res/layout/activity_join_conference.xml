@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
@@ -12,131 +13,152 @@
 
     </data>
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.adrosonic.adrobuzz.components.JoinConference.JoinConference">
-
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        tools:context="com.adrosonic.adrobuzz.components.JoinConference.JoinConference">
 
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/logo"
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="24dp"
-                android:layout_marginTop="24dp"
-                android:src="@drawable/ic_launcher_background" />
+                android:layout_weight="1"
+                android:text="Join Conference"
+                android:textColor="@color/colorAccent"
+                android:textSize="25sp" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/inputLayoutConfId"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/logo"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:theme="@style/TextLabel">
+                android:layout_weight="1"
+                android:text="Enter details to join the conference"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="italic" />
 
-                <EditText
-                    android:id="@+id/conf_id"
+        </LinearLayout>
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/header"
+            android:layout_marginTop="16dp"
+            android:fillViewport="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/inputLayoutConfId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/conference_id"
-                    android:imeOptions="actionNext"
-                    android:singleLine="true"
-                    android:theme="@style/EditTextTheme"
-                    app:validateEmpty="@{true}"
-                    app:validateEmptyAutoDismiss="@{true}"
-                    app:validateEmptyMessage="@{@string/conference_id_empty}"
-                    android:inputType="textNoSuggestions|number"/>
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:theme="@style/TextLabel">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/conf_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/conference_id"
+                        android:imeOptions="actionNext"
+                        android:inputType="textNoSuggestions|number"
+                        android:singleLine="true"
+                        android:theme="@style/EditTextTheme"
+                        app:validateEmpty="@{true}"
+                        app:validateEmptyAutoDismiss="@{true}"
+                        app:validateEmptyMessage="@{@string/conference_id_empty}" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/inputLayoutJoineeUsername"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/inputLayoutConfId"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:theme="@style/TextLabel">
+                </android.support.design.widget.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/joinee_username"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/inputLayoutJoineeUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/joinee_username"
-                    android:imeOptions="actionNext"
-                    android:singleLine="true"
-                    android:theme="@style/EditTextTheme"
-                    app:validateEmpty="@{true}"
-                    app:validateEmptyAutoDismiss="@{true}"
-                    app:validateEmptyMessage="@{@string/joinee_username_empty}"
-                    android:inputType="textNoSuggestions"/>
+                    android:layout_below="@+id/inputLayoutConfId"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:theme="@style/TextLabel">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/joinee_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/joinee_username"
+                        android:imeOptions="actionNext"
+                        android:inputType="textNoSuggestions"
+                        android:singleLine="true"
+                        android:theme="@style/EditTextTheme"
+                        app:validateEmpty="@{true}"
+                        app:validateEmptyAutoDismiss="@{true}"
+                        app:validateEmptyMessage="@{@string/joinee_username_empty}" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/inputLayoutJoineeEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/inputLayoutJoineeUsername"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:theme="@style/TextLabel">
+                </android.support.design.widget.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/joinee_email"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/inputLayoutJoineeEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/joinee_email"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true"
-                    android:theme="@style/EditTextTheme"
-                    app:validateType='@{"email"}'
-                    app:validateTypeAutoDismiss="@{true}"
-                    app:validateTypeMessage="@{@string/invalid_email}"
-                    android:inputType="textNoSuggestions"/>
+                    android:layout_below="@+id/inputLayoutJoineeUsername"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:theme="@style/TextLabel">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/joinee_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/joinee_email"
+                        android:imeOptions="actionDone"
+                        android:inputType="textNoSuggestions"
+                        android:singleLine="true"
+                        android:theme="@style/EditTextTheme"
+                        app:validateType='@{"email"}'
+                        app:validateTypeAutoDismiss="@{true}"
+                        app:validateTypeMessage="@{@string/invalid_email}" />
 
-            <Button
-                android:id="@+id/join_conference"
-                android:layout_width="match_parent"
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/join_conference"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/inputLayoutJoineeEmail"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/button_background"
+                    android:text="@string/join_conference"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+        </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/progressLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#33000000"
+            android:visibility="@{joinConf ? View.VISIBLE : View.GONE}">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/inputLayoutJoineeEmail"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/button_background"
-                android:text="@string/join_conference"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:layout_gravity="center" />
+        </FrameLayout>
 
-        </RelativeLayout>
-    </ScrollView>
-
-    <FrameLayout
-        android:id="@+id/progressLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#33000000"
-        android:visibility="@{joinConf ? View.VISIBLE : View.GONE}">
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
-
-</RelativeLayout>
+    </RelativeLayout>
 </layout>

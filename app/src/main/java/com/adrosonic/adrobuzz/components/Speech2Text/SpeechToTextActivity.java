@@ -3,6 +3,7 @@ package com.adrosonic.adrobuzz.components.Speech2Text;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
@@ -11,20 +12,27 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.components.main.App;
+import com.adrosonic.adrobuzz.components.main.MainActivity;
 import com.adrosonic.adrobuzz.contract.SpeechToTextContract;
 import com.adrosonic.adrobuzz.databinding.ActivitySpeechToTextBinding;
 import com.adrosonic.adrobuzz.model.CreateConfRequest;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.translation_engine.TranslatorFactory;
+import com.adrosonic.adrobuzz.translation_engine.translators.IConvertor;
 import com.adrosonic.adrobuzz.translation_engine.utils.ConversionCallaback;
 
 import java.util.ArrayList;
@@ -66,11 +74,24 @@ public class SpeechToTextActivity extends AppCompatActivity implements Conversio
     @BindView(R.id.sttOutput)
     TextView sttOutput;
 
+    @BindView(R.id.send_mail)
+    Button send;
+
+    @BindView(R.id.logout)
+    Button logout;
+
+    @BindView(R.id.endConf)
+    Button endConf;
+
+    @BindView(R.id.edit)
+    ImageView edit;
+
     @Inject
     Retrofit retrofit;
 
     private SpeechToTextContract.Presenter mPresenter;
     private CountDownTimer dataRefreshTimer;
+    private boolean isAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,15 +106,19 @@ public class SpeechToTextActivity extends AppCompatActivity implements Conversio
         mPresenter = new SpeechToTextPresenter(this, this, service);
 
         mBinding.setPresenter((SpeechToTextPresenter) mPresenter);
+        mBinding.setEditSummary(true);
+
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-        boolean isAdmin = PreferenceManager.getInstance(this).getIsAdmin();
+        isAdmin = PreferenceManager.getInstance(this).getIsAdmin();
 
         if (isAdmin) {
-            mBinding.endConf.setVisibility(View.VISIBLE);
+            endConf.setVisibility(View.VISIBLE);
         } else {
-            mBinding.endConf.setVisibility(View.INVISIBLE);
+            endConf.setVisibility(View.GONE);
         }
+
+        sttOutput.setText(PreferenceManager.getInstance(this).getConferenceSummary());
 
         if (Build.VERSION.SDK_INT >= 23) {
             requestForPermission();
@@ -101,42 +126,40 @@ public class SpeechToTextActivity extends AppCompatActivity implements Conversio
             setUpView();
         }
 
-        dataRefreshTimer = new CountDownTimer(2000, 1000) {
-            @Override
-            public void onTick(long l) {
+        int confStatus = PreferenceManager.getInstance(this).getConferenceStatus();
+        switch (confStatus) {
+            case 2:
+            default:
+                send.setVisibility(View.INVISIBLE);
+                edit.setVisibility(View.GONE);
+                if(!isAdmin){
+                    dataRefreshTimer = new CountDownTimer(120000, 1000) {
+                        @Override
+                        public void onTick(long l) {
 
-            }
-            @Override
-            public void onFinish() {
-//                @Override
-//                public void didRecieveResource(Resource<List<ExchangeRate>> resource) {
-////                        view.setLoadingIndicator(false);
-//                    switch (resource.status) {
-//                        case LOADING:
-////                                view.setLoadingIndicator(true);
-//                            break;
-//                        case ERROR:
-////                                view.showLoadingRatesError();
-//                            break;
-//                        case SUCCESS:
-////                                PreferenceManager.getInstance(context).updateSelected(resource.data.get(0));
-////                                view.showExchangeRates(resource.data);
-//                            Intent intent = new Intent();
-//                            intent.setAction("FETCH_RATES_SUCCESSFUL");
-//                            sendBroadcast(intent);
-//                            break;
-//                        default:
-//                            break;
-//                    }
-//                }
-//            });
-               //TODO make status call and update UI appropriately
-                dataRefreshTimer.start();
-            }
-        }.start();
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            mPresenter.getConferenceStatus();
+                            dataRefreshTimer.start();
+                        }
+                    }.start();
+                }
+                break;
+            case 3:
+                send.setVisibility(View.VISIBLE);
+                edit.setVisibility(View.VISIBLE);
+
+                if (isAdmin) {
+                    endConf.setVisibility(View.GONE);
+                    PreferenceManager.getInstance(this).setAdminEndedConference(true);
+                }
+                break;
+        }
     }
 
-    @OnClick({R.id.startRecording, R.id.stopRecording, R.id.endConf})
+    @OnClick({R.id.startRecording, R.id.stopRecording, R.id.endConf, R.id.send_mail, R.id.logout, R.id.edit})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startRecording:
@@ -156,7 +179,75 @@ public class SpeechToTextActivity extends AppCompatActivity implements Conversio
                 break;
 
             case R.id.endConf:
-                Toast.makeText(this, "End Conference", Toast.LENGTH_SHORT).show();
+                IConvertor iConvertor = TranslatorFactory.getInstance().iConvertor;
+                if (iConvertor != null) {
+                    iConvertor.stopListening();
+                }
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                mPresenter.endConference();
+                break;
+
+            case R.id.send_mail:
+                Toast.makeText(this, "Mail Sent", Toast.LENGTH_SHORT).show();
+                PreferenceManager.getInstance(this).setEmailSent(true);
+                //TODO send mail form admin to all
+                // TODO send mail to self
+                break;
+
+            case R.id.logout:
+
+                if (isAdmin) {
+                    boolean isEnded = PreferenceManager.getInstance(this).getAdminEndedConference();
+                    if (isEnded) {
+                        boolean isEmailSent = PreferenceManager.getInstance(this).getEmailSent();
+                        if (isEmailSent) {
+                            showAlertSureToLogout();
+                        } else {
+                            showAlertEmailBeforeLogOutAdmin();
+                        }
+                    } else {
+                        showAlertEndConference();
+                    }
+                } else {
+                    stopRecording();
+                    stopTimer();
+                    mPresenter.getConferenceStatusLogOut();
+                }
+                break;
+
+            case R.id.edit:
+
+                LayoutInflater li = LayoutInflater.from(this);
+                View promptsView = li.inflate(R.layout.conference_summary_edit, null);
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        this);
+                alertDialogBuilder.setView(promptsView);
+                final EditText userInput = promptsView
+                        .findViewById(R.id.conferenceSummary);
+                userInput.setText(PreferenceManager.getInstance(this).getConferenceSummary());
+                int textLength = userInput.getText().length();
+                userInput.setSelection(textLength, textLength);
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Save",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        sttOutput.setText(userInput.getText());
+                                        PreferenceManager.getInstance(SpeechToTextActivity.this).setEmailSent(false);
+                                        PreferenceManager.getInstance(SpeechToTextActivity.this).setConferenceSummary(userInput.getText().toString());
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 break;
 
             default:
@@ -233,8 +324,7 @@ public class SpeechToTextActivity extends AppCompatActivity implements Conversio
                 } else {
                     Toast.makeText(SpeechToTextActivity.this, "Permission denied: Recording wont work", Toast.LENGTH_SHORT)
                             .show();
-//                    finish();
-                    //TODO disable buttons for recording
+
                 }
             }
             break;
@@ -246,11 +336,13 @@ public class SpeechToTextActivity extends AppCompatActivity implements Conversio
     private void setUpView() {
     }
 
-
     @Override
     public void onSuccess(String result) {
         liveText.setText(result);
-        sttOutput.setText(sttOutput.getText() + "\n" + result);
+        String temp = sttOutput.getText() + "\n" + result;
+        sttOutput.setText(temp);
+
+        PreferenceManager.getInstance(this).setConferenceSummary(temp);
 
         audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
         TranslatorFactory.getInstance().iConvertor.startListening(SpeechToTextActivity.this);
@@ -274,7 +366,218 @@ public class SpeechToTextActivity extends AppCompatActivity implements Conversio
 
     @Override
     public void conferenceEnded() {
+        PreferenceManager.getInstance(this).setAdminEndedConference(true);
+        endConf.setVisibility(View.GONE);
+        send.setVisibility(View.VISIBLE);
+        edit.setVisibility(View.VISIBLE);
+        mBinding.setEditSummary(true);
+    }
 
+    @Override
+    public void showError(String message) {
+        showAlert(message);
+    }
+
+    @Override
+    public void finalConfStatus(int status) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        final boolean isEmailSent = PreferenceManager.getInstance(this).getEmailSent();
+
+        switch (status) {
+
+            case 2:
+                showAlertConfOngoing();
+                break;
+
+            case 3:
+                if (isEmailSent) {
+                    showAlertSureToLogout();
+                } else {
+                    showAlertEmailBeforeLogOutAdmin();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void confStatus(int status) {
+
+        showAlert("Conference has been ended by admin");
+        send.setVisibility(View.VISIBLE);
+        edit.setVisibility(View.VISIBLE);
+
+    }
+
+    public void showAlert(String message) {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+    }
+
+
+    public void showAlertEmailBeforeLogOutAdmin() {
+        AlertDialog alertDialog = new AlertDialog.Builder(SpeechToTextActivity.this).create();
+        alertDialog.setMessage("Do you want to send email before logging out");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Send",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //TODO send mail
+
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Logout",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                       clearPrefsAndExit();
+                    }
+                });
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+
+    }
+
+    public void showAlertEmailBeforeLogOutNonAdmin() {
+        AlertDialog alertDialog = new AlertDialog.Builder(SpeechToTextActivity.this).create();
+        alertDialog.setMessage("Do you want to send email before logging out");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Send",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //TODO send mail
+
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        startTimer();
+                        startRecording();
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Logout",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        clearPrefsAndExit();
+                    }
+                });
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+
+    }
+
+    public void showAlertSureToLogout() {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setMessage("Are you sure you want to logout");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        clearPrefsAndExit();
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+    }
+
+    public void showAlertConfOngoing() {
+        final boolean isEmailSent = PreferenceManager.getInstance(this).getEmailSent();
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setMessage("Conference has not been ended yet. Are you sure you want to leave conference?");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (isEmailSent) {
+                            clearPrefsAndExit();
+                        } else {
+                            showAlertEmailBeforeLogOutNonAdmin();
+                        }
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        startTimer();
+                        startRecording();
+                    }
+                });
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+
+    }
+
+    public void showAlertEndConference(){
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setMessage("Please end conference before logging off");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+    }
+
+    public void clearPrefsAndExit() {
+        PreferenceManager.getInstance(SpeechToTextActivity.this).clearSharedPreferences();
+        stopTimer();
+        Intent intent = new Intent(SpeechToTextActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    public void stopRecording() {
+        IConvertor iConvertor = TranslatorFactory.getInstance().iConvertor;
+        if (iConvertor != null) {
+            iConvertor.stopListening();
+        }
+    }
+
+    public void startRecording() {
+        IConvertor iConvertor = TranslatorFactory.getInstance().iConvertor;
+        if (iConvertor != null) {
+            iConvertor.startListening(this);
+        }
+    }
+
+    public void stopTimer() {
+        if (dataRefreshTimer != null) {
+            dataRefreshTimer.cancel();
+            Log.v(TAG,"Timer stopped");
+        }
+    }
+
+    public void startTimer() {
+        if (dataRefreshTimer != null) {
+            dataRefreshTimer.start();
+            Log.v(TAG,"Timer started");
+        }
     }
 
 }

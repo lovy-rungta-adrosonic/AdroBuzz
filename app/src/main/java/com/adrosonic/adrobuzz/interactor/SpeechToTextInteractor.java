@@ -24,7 +24,7 @@ import retrofit2.Response;
 
 public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
 
-    private static final String TAG = StartConferenceInteractor.class.getSimpleName();
+    private static final String TAG = SpeechToTextInteractor.class.getSimpleName();
     private final Service mService;
     private final AppExecutors mExecutors;
     private Context mContext;
@@ -36,8 +36,74 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
     }
 
     @Override
-    public void endConference(@NonNull Completion completion) {
+    public void endConference(final @NonNull Completion completion) {
 
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                String confId = PreferenceManager.getInstance(mContext).getConfID();
+
+                mService.endConference(confId).enqueue(new Callback<ConferenceStatus>() {
+                    @Override
+                    public void onResponse(Call<ConferenceStatus> call, final Response<ConferenceStatus> response) {
+                        if (response.isSuccessful()) {
+                            final ConferenceStatus body = response.body();
+                            if (body != null && body.getStatus() == 0) {
+                                Log.v(TAG, "endConference: success: \n" + body.getStatus());
+                                mExecutors.diskIO().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        PreferenceManager.getInstance(mContext).setConferenceStatus(3);
+                                    }
+                                });
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        completion.didReceiveResource(Resource.success(body));
+                                    }
+                                });
+                            } else {
+
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ConferenceStatus conf = null;
+                                        completion.didReceiveResource(Resource.error("Failed to endConference",
+                                                conf));
+                                    }
+                                });
+                            }
+
+                        } else {
+                            try {
+                                final String string = response.errorBody()
+                                        .string();
+                                Log.e(TAG, "endConference: errorBody: \n" + string);
+                            } catch (IOException | NullPointerException e) {
+                                Log.e(TAG, "endConference: errorBody: \n" + e.getMessage());
+                            }
+
+                            mExecutors.mainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ConferenceStatus conf = null;
+                                    completion.didReceiveResource(Resource.error("Failed to end conference",
+                                            conf));
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ConferenceStatus> call, Throwable t) {
+                        Log.e(TAG, "endConference: onFailure: \n", t);
+                        ConferenceStatus conf = null;
+                        completion.didReceiveResource(Resource.error(t.getMessage(), conf));
+                    }
+                });
+            }
+        });
     }
 
     @Override
