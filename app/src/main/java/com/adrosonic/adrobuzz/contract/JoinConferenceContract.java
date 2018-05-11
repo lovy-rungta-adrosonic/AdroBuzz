@@ -18,6 +18,7 @@ public interface JoinConferenceContract {
     interface View {
         void setLoadingIndicator(boolean active);
         JoinConfRequest getParameters();
+        String getConfId();
     }
 
     interface Presenter {
@@ -25,7 +26,7 @@ public interface JoinConferenceContract {
     }
 
     interface UseCase {
-        void joinConference(JoinConfRequest request, @NonNull JoinConferenceContract.UseCase.Completion completion);
+        void joinConference(String confId, JoinConfRequest request, @NonNull JoinConferenceContract.UseCase.Completion completion);
 
         interface Completion {
             void didReceiveResource(Resource<APIResponse> resource);

@@ -30,8 +30,8 @@ public class JoinConferencePresenter implements JoinConferenceContract.Presenter
     public void joinConference() {
 
         final JoinConfRequest request = view.getParameters();
-
-        mInteractor.joinConference(request, new JoinConferenceContract.UseCase.Completion() {
+        final String confId = view.getConfId();
+        mInteractor.joinConference( confId, request, new JoinConferenceContract.UseCase.Completion() {
             @Override
             public void didReceiveResource(Resource<APIResponse> resource) {
                 view.setLoadingIndicator(false);

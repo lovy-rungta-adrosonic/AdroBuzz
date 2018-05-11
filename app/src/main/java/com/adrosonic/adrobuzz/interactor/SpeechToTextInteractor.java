@@ -7,7 +7,6 @@ import android.util.Log;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.SpeechToTextContract;
 import com.adrosonic.adrobuzz.model.ConferenceStatus;
-import com.adrosonic.adrobuzz.model.StartConf;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
 import com.adrosonic.adrobuzz.sync.network.Resource;
@@ -121,7 +120,7 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
                             final ConferenceStatus body = response.body();
                             if (body != null && body.getStatus() == 0) {
                                 Log.v(TAG, "getConferenceStatus: success: \n" + body.getStatus());
-                                Log.v(TAG, "getConferenceStatus: success: \n" + body.getData().getName());
+                                Log.v(TAG, "getConferenceStatus: success: \n" + body.getDataConfStatus().getName());
 
                                 mExecutors.diskIO().execute(new Runnable() {
                                     @Override

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Awesome Pojo Generator
  * */
-public class Data{
+public class DataConfStatus {
   @SerializedName("name")
   @Expose
   private String name;

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -357,6 +358,11 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                 });
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
+
+        Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+        LinearLayout.LayoutParams neutralButtonLL = (LinearLayout.LayoutParams) neutralButton.getLayoutParams();
+        neutralButtonLL.weight= 10;
+        neutralButton.setLayoutParams(neutralButtonLL);
     }
 
     public void showAlertEmailBeforeLogOutAdmin() {
@@ -385,6 +391,16 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                 });
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
+
+        Button btnPositive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button btnNegative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        Button btnNeutral = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) btnPositive.getLayoutParams();
+        layoutParams.weight = 10;
+        btnPositive.setLayoutParams(layoutParams);
+        btnNegative.setLayoutParams(layoutParams);
+        btnNeutral.setLayoutParams(layoutParams);
 
     }
 
@@ -417,6 +433,16 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
 
+        Button btnPositive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button btnNegative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        Button btnNeutral = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) btnPositive.getLayoutParams();
+        layoutParams.weight = 10;
+        btnPositive.setLayoutParams(layoutParams);
+        btnNegative.setLayoutParams(layoutParams);
+        btnNeutral.setLayoutParams(layoutParams);
+
     }
 
     public void showAlertSureToLogout() {
@@ -437,6 +463,14 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                 });
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
+
+        Button btnPositive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button btnNegative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) btnPositive.getLayoutParams();
+        layoutParams.weight = 10;
+        btnPositive.setLayoutParams(layoutParams);
+        btnNegative.setLayoutParams(layoutParams);
     }
 
     public void showAlertConfOngoing() {
@@ -465,6 +499,14 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
 
+        Button btnPositive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button btnNegative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) btnPositive.getLayoutParams();
+        layoutParams.weight = 10;
+        btnPositive.setLayoutParams(layoutParams);
+        btnNegative.setLayoutParams(layoutParams);
+
     }
 
     public void showAlertEndConference() {
@@ -478,6 +520,11 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                 });
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
+
+        Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+        LinearLayout.LayoutParams neutralButtonLL = (LinearLayout.LayoutParams) neutralButton.getLayoutParams();
+        neutralButtonLL.weight= 10;
+        neutralButton.setLayoutParams(neutralButtonLL);
     }
 
     public void clearPrefsAndExit() {

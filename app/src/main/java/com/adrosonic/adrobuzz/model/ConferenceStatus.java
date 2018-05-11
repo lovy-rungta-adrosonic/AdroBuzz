@@ -7,18 +7,18 @@ import com.google.gson.annotations.SerializedName;
 public class ConferenceStatus{
   @SerializedName("data")
   @Expose
-  private Data data;
+  private DataConfStatus dataConfStatus;
   @SerializedName("error")
   @Expose
   private Object error;
   @SerializedName("status")
   @Expose
   private Integer status;
-  public void setData(Data data){
-   this.data=data;
+  public void setDataConfStatus(DataConfStatus dataConfStatus){
+   this.dataConfStatus = dataConfStatus;
   }
-  public Data getData(){
-   return data;
+  public DataConfStatus getDataConfStatus(){
+   return dataConfStatus;
   }
   public void setError(Object error){
    this.error=error;

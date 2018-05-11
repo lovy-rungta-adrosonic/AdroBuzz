@@ -9,8 +9,6 @@ import com.google.gson.annotations.SerializedName;
 public class JoinConfRequest {
     @SerializedName("name")
     private String name;
-    @SerializedName("conferenceID")
-    private String conferenceID;
     @SerializedName("email")
     private String email;
 
@@ -19,14 +17,6 @@ public class JoinConfRequest {
     }
     public String getName(){
         return name;
-    }
-
-    public String getConferenceID() {
-        return conferenceID;
-    }
-
-    public void setConferenceID(String conferenceID) {
-        this.conferenceID = conferenceID;
     }
 
     public String getEmail() {
@@ -42,7 +32,6 @@ public class JoinConfRequest {
 
         private String mName;
         private String mEmail;
-        private String mConfId;
 
         public JoinConfRequest.Builder withName(String name) {
             mName = name;
@@ -54,18 +43,11 @@ public class JoinConfRequest {
             return this;
         }
 
-        public JoinConfRequest.Builder withConferenceId(String conferenceId) {
-            mConfId = conferenceId;
-            return this;
-        }
-
         public JoinConfRequest build() {
             JoinConfRequest request = new JoinConfRequest();
             request.name = mName;
             request.email = mEmail;
-            request.conferenceID = mConfId;
             return request;
         }
-
     }
 }

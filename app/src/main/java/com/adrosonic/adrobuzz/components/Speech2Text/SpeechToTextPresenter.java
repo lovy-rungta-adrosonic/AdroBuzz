@@ -1,14 +1,13 @@
 package com.adrosonic.adrobuzz.components.Speech2Text;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.SpeechToTextContract;
 import com.adrosonic.adrobuzz.interactor.SpeechToTextInteractor;
 import com.adrosonic.adrobuzz.model.ConferenceStatus;
 import com.adrosonic.adrobuzz.model.CreateConfRequest;
-import com.adrosonic.adrobuzz.model.Data;
+import com.adrosonic.adrobuzz.model.DataConfStatus;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
@@ -76,9 +75,9 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter {
                         break;
                     case SUCCESS:
                         if (resource.data != null) {
-                            Data data = resource.data.getData();
-                            if (data != null) {
-                                switch (data.getId()) {
+                            DataConfStatus dataConfStatus = resource.data.getDataConfStatus();
+                            if (dataConfStatus != null) {
+                                switch (dataConfStatus.getId()) {
                                     case 1:
                                         view.confStatus(1);
                                         PreferenceManager.getInstance(context).setConferenceStatus(1);
@@ -120,9 +119,9 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter {
                         break;
                     case SUCCESS:
                         if (resource.data != null) {
-                            Data data = resource.data.getData();
-                            if (data != null) {
-                                switch (data.getId()) {
+                            DataConfStatus dataConfStatus = resource.data.getDataConfStatus();
+                            if (dataConfStatus != null) {
+                                switch (dataConfStatus.getId()) {
                                     case 1:
                                         PreferenceManager.getInstance(context).setConferenceStatus(1);
                                         view.finalConfStatus(1);

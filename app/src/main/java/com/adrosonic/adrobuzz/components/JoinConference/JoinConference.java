@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.adrosonic.adrobuzz.R;
@@ -31,6 +32,15 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
 
     @Inject
     Retrofit retrofit;
+
+    @BindView(R.id.conf_id)
+    EditText confId;
+
+    @BindView(R.id.joinee_username)
+    EditText username;
+
+    @BindView(R.id.joinee_email)
+    EditText email;
 
     @BindView(R.id.join_conference)
     Button joinConference;
@@ -92,6 +102,23 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
 
     @Override
     public JoinConfRequest getParameters() {
-        return null;
+
+
+        EditText username = findViewById(R.id.joinee_username);
+        EditText email = findViewById(R.id.joinee_email);
+
+        request = new JoinConfRequest.Builder()
+                .withName(username.getText().toString())
+                .withEmail(email.getText().toString())
+                .build();
+
+        return request;
     }
+
+    @Override
+    public String getConfId() {
+        EditText confId = findViewById(R.id.conf_id);
+        return confId.getText().toString();
+    }
+
 }

@@ -38,22 +38,22 @@ public class JoinConferenceInteractor implements JoinConferenceContract.UseCase 
 
 
     @Override
-    public void joinConference(JoinConfRequest request, @NonNull JoinConferenceContract.UseCase.Completion completion) {
-//        mExecutors.networkIO().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                mService.getConferenceID(request).enqueue(new Callback<CreateConf>() {
+    public void joinConference(final String confId,final JoinConfRequest request, final @NonNull JoinConferenceContract.UseCase.Completion completion) {
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+//                mService.joinConference(confId,request).enqueue(new Callback<CreateConf>() {
 //                    @Override
 //                    public void onResponse(Call<CreateConf> call, final Response<CreateConf> response) {
 //                        if (response.isSuccessful()) {
 //                            final CreateConf body = response.body();
-//                            Log.v(TAG, "fetchConferenceID: success: \n"+ body.getData());
+//                            Log.v(TAG, "joinConference: success: \n"+ body.getDataConfStatus());
 //                            mExecutors.diskIO().execute(new Runnable() {
 //                                @Override
 //                                public void run() {
 //                                    PreferenceManager.getInstance(mContext).setIsAdmin(true);
-//                                    PreferenceManager.getInstance(mContext).setConfID(body.getData());
+//                                    PreferenceManager.getInstance(mContext).setConfID(body.getDataConfStatus());
 //                                    PreferenceManager.getInstance(mContext).setConfParams(request);
 //                                }
 //                            });
@@ -67,15 +67,15 @@ public class JoinConferenceInteractor implements JoinConferenceContract.UseCase 
 //                            try {
 //                                final String string = response.errorBody()
 //                                        .string();
-//                                Log.e(TAG, "fetchConferenceID: errorBody: \n" + string);
+//                                Log.e(TAG, "joinConference: errorBody: \n" + string);
 //                            } catch (IOException | NullPointerException e) {
-//                                Log.e(TAG, "fetchConferenceID: errorBody: \n" + e.getMessage());
+//                                Log.e(TAG, "joinConference: errorBody: \n" + e.getMessage());
 //                            }
 //                            mExecutors.mainThread().execute(new Runnable() {
 //                                @Override
 //                                public void run() {
 //                                    CreateConf conf = null;
-//                                    completion.didReceiveResource(Resource.error("Failed to fetchConferenceID",
+//                                    completion.didReceiveResource(Resource.error("Failed to joinConference",
 //                                            conf));
 //                                }
 //                            });
@@ -84,12 +84,12 @@ public class JoinConferenceInteractor implements JoinConferenceContract.UseCase 
 //
 //                    @Override
 //                    public void onFailure(Call<CreateConf> call, Throwable t) {
-//                        Log.e(TAG, "fetchConferenceID: onFailure: \n", t);
+//                        Log.e(TAG, "joinConference: onFailure: \n", t);
 //                        CreateConf conf = null;
 //                        completion.didReceiveResource(Resource.error(t.getMessage(), conf));
 //                    }
 //                });
-//            }
-//        });
+            }
+        });
     }
 }
