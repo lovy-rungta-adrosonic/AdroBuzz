@@ -8,16 +8,16 @@
         <import type="android.view.View" />
 
         <variable
-        name="presenter"
-        type="com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextPresenter"/>
+            name="presenter"
+            type="com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextPresenter" />
 
         <variable
             name="editSummary"
-            type="Boolean"/>
+            type="Boolean" />
 
         <variable
             name="status"
-            type="Boolean"/>
+            type="Boolean" />
 
     </data>
 
@@ -33,17 +33,14 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-
-            <Button
+            <ImageView
+                android:id="@+id/logout"
+                android:clickable="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Log off"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:id="@+id/logout"
-                android:background="@android:color/transparent"/>
+                app:srcCompat="@drawable/ic_logout"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -54,16 +51,13 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="25sp" />
 
-            <Button
+            <ImageView
+                android:id="@+id/send_mail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="Send"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:id="@+id/send_mail"
-                android:background="@android:color/transparent"/>
+                app:srcCompat="@drawable/ic_send_email"
+                android:clickable="true"/>
 
         </LinearLayout>
 
@@ -101,7 +95,6 @@
 
         </ScrollView>
 
-
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
@@ -116,18 +109,19 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/wrap"
             android:layout_centerHorizontal="true"
-            android:src="@android:drawable/ic_btn_speak_now"
-            app:backgroundTint="@color/colorAccent" />
+            android:src="@drawable/ic_microphone"
+            app:backgroundTint="@color/colorAccent"
+            android:visibility="gone"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/stopRecording"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_below="@+id/wrap"
-            android:layout_marginLeft="8dp"
-            android:src="@android:drawable/ic_delete"
-            app:backgroundTint="@color/colorAccent" />
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_stop_recording"
+            app:backgroundTint="@color/red"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/statusOfRecording"
@@ -136,7 +130,7 @@
             android:layout_below="@+id/view"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="34dp"
-            android:text="Start recording"
+            android:text=""
             android:textColor="@color/colorPrimaryDark" />
 
         <Button
@@ -159,7 +153,10 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/endConf"
             android:layout_below="@+id/statusOfRecording"
-            android:layout_margin="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
 
             <TextView
@@ -177,8 +174,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@+id/summary"
                 android:background="@drawable/border_two_dp"
-                android:padding="4dp"
-                >
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/sttOutput"
@@ -186,31 +182,38 @@
                     android:layout_height="match_parent"
                     android:textAllCaps="false"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="14sp"
-                    />
+                    android:textSize="14sp" />
             </ScrollView>
 
         </RelativeLayout>
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/edit"
+            android:visibility="@{editSummary ? View.VISIBLE : View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/summaryLayout"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:visibility="@{editSummary ? View.VISIBLE : View.GONE}"
-            android:layout_margin="8dp">
+            android:clickable="true"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            app:srcCompat="@drawable/edit_pencil" />
 
-            <ImageView
-                android:id="@+id/edit"
+        <FrameLayout
+            android:id="@+id/progressLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#33000000"
+            android:visibility="@{status ? View.VISIBLE : View.GONE}">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:padding="8dp"
-                app:srcCompat="@drawable/edit_pencil" />
-
+                android:layout_gravity="center" />
         </FrameLayout>
-
 
     </RelativeLayout>
 </layout>

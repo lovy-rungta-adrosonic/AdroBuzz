@@ -6,9 +6,9 @@
     android:gravity="center">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_empty_invites"
             android:id="@+id/iv_empty"/>
 
         <TextView
@@ -23,7 +23,7 @@
             android:textStyle="italic"
             android:textAllCaps="false"
             android:textSize="12sp"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/dark_gray"
             android:id="@+id/tv_empty"/>
 
     </LinearLayout>

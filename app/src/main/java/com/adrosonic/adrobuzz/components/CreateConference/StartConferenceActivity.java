@@ -8,7 +8,10 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.adrosonic.adrobuzz.R;
@@ -45,8 +48,8 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
     LinearLayout mLayout;
     EmailListAdapter adapter;
 
-    @BindView(R.id.start_conference)
-    Button startConference;
+    @BindView(R.id.add_invites)
+    ImageView add_invites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,9 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
         mBinding.setStatusLoading(false);
         mBinding.setPresenter((StartConferencePresenter) mPresenter);
         unbinder = ButterKnife.bind(this, view);
+
+        Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse);
+        add_invites.startAnimation(pulse);
 
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mLayout = view.findViewById(R.id.emptyLayout);

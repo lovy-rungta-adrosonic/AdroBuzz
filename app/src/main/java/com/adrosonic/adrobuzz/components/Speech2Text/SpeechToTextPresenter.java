@@ -16,7 +16,7 @@ import com.adrosonic.adrobuzz.sync.network.Resource;
  * Created by Lovy on 09-05-2018.
  */
 
-public class SpeechToTextPresenter implements SpeechToTextContract.Presenter{
+public class SpeechToTextPresenter implements SpeechToTextContract.Presenter {
 
     private static final String TAG = SpeechToTextPresenter.class.getSimpleName();
 
@@ -27,15 +27,15 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter{
     public SpeechToTextPresenter(SpeechToTextContract.View view, Context context, Service service) {
         this.view = view;
         this.context = context;
-        mInteractor = new SpeechToTextInteractor(context,service);
+        mInteractor = new SpeechToTextInteractor(context, service);
     }
 
     @Override
     public String getConfSubject() {
         CreateConfRequest request = PreferenceManager.getInstance(context).getConfParams();
-        if(request!=null){
+        if (request != null) {
             return request.getName();
-        }else{
+        } else {
             return "Subject";
         }
     }
@@ -65,19 +65,19 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter{
 
     @Override
     public void getConferenceStatus() {
-        mInteractor .getConferenceStatus(new SpeechToTextContract.UseCase.Completion() {
+        mInteractor.getConferenceStatus(new SpeechToTextContract.UseCase.Completion() {
             @Override
             public void didReceiveResource(Resource<ConferenceStatus> resource) {
-
+                view.setLoadingIndicator(false);
                 switch (resource.status) {
                     case LOADING:
                         break;
                     case ERROR:
                         break;
                     case SUCCESS:
-                        if(resource.data!=null){
+                        if (resource.data != null) {
                             Data data = resource.data.getData();
-                            if(data!=null){
+                            if (data != null) {
                                 switch (data.getId()) {
                                     case 1:
                                         view.confStatus(1);
@@ -96,7 +96,7 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter{
                                         break;
                                 }
                             }
-                        }else{
+                        } else {
                             view.confStatus(0);
                         }
                         break;
@@ -109,19 +109,19 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter{
 
     @Override
     public void getConferenceStatusLogOut() {
-        mInteractor .getConferenceStatus(new SpeechToTextContract.UseCase.Completion() {
+        mInteractor.getConferenceStatus(new SpeechToTextContract.UseCase.Completion() {
             @Override
             public void didReceiveResource(Resource<ConferenceStatus> resource) {
-
+                view.setLoadingIndicator(false);
                 switch (resource.status) {
                     case LOADING:
                         break;
                     case ERROR:
                         break;
                     case SUCCESS:
-                        if(resource.data!=null){
+                        if (resource.data != null) {
                             Data data = resource.data.getData();
-                            if(data!=null){
+                            if (data != null) {
                                 switch (data.getId()) {
                                     case 1:
                                         PreferenceManager.getInstance(context).setConferenceStatus(1);
@@ -133,14 +133,14 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter{
                                         break;
                                     case 3:
                                         PreferenceManager.getInstance(context).setConferenceStatus(3);
-                                        view.finalConfStatus(2);
+                                        view.finalConfStatus(3);
                                         break;
                                     default:
                                         view.finalConfStatus(0);
                                         break;
                                 }
                             }
-                        }else{
+                        } else {
                             view.finalConfStatus(0);
                         }
 
