@@ -1,8 +1,5 @@
 package com.adrosonic.adrobuzz.model;
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
 
 /**
  * Awesome Pojo Generator
@@ -15,7 +12,7 @@ public class CreateConfRequest {
   @SerializedName("name")
   private String name;
   @SerializedName("user")
-  private User user;
+  private CreateConfUser createConfUser;
   public void setVenue(String venue){
    this.venue=venue;
   }
@@ -34,11 +31,11 @@ public class CreateConfRequest {
   public String getName(){
    return name;
   }
-  public void setUser(User user){
-   this.user=user;
+  public void setCreateConfUser(CreateConfUser createConfUser){
+   this.createConfUser = createConfUser;
   }
-  public User getUser(){
-   return user;
+  public CreateConfUser getCreateConfUser(){
+   return createConfUser;
   }
 
     public static class Builder {
@@ -46,7 +43,7 @@ public class CreateConfRequest {
         private String mVenue;
         private String mConferenceDate;
         private String mName;
-        private User mUser;
+        private CreateConfUser mCreateConfUser;
 
         public CreateConfRequest.Builder withName(String name) {
            mName = name;
@@ -63,8 +60,8 @@ public class CreateConfRequest {
             return this;
         }
 
-        public CreateConfRequest.Builder withUser(User user) {
-           mUser = user;
+        public CreateConfRequest.Builder withUser(CreateConfUser createConfUser) {
+           mCreateConfUser = createConfUser;
             return this;
         }
 
@@ -73,7 +70,7 @@ public class CreateConfRequest {
             request.name = mName;
             request.venue = mVenue;
             request.conferenceDate = mConferenceDate;
-            request.user = mUser;
+            request.createConfUser = mCreateConfUser;
             return request;
         }
 

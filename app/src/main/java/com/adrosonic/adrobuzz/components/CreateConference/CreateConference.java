@@ -22,7 +22,7 @@ import com.adrosonic.adrobuzz.contract.CreateConferenceContract;
 import com.adrosonic.adrobuzz.databinding.ActivityCreateConferenceBinding;
 import com.adrosonic.adrobuzz.model.CreateConf;
 import com.adrosonic.adrobuzz.model.CreateConfRequest;
-import com.adrosonic.adrobuzz.model.User;
+import com.adrosonic.adrobuzz.model.CreateConfUser;
 import com.adrosonic.adrobuzz.sync.api.Service;
 
 import java.text.ParseException;
@@ -189,7 +189,7 @@ public class CreateConference extends AppCompatActivity implements CreateConfere
                 .withName(name.getText().toString())
                 .withVenue(venue.getText().toString())
                 .withConferenceDate(date)
-                .withUser(new User.Builder().withUserName(username.getText().toString())
+                .withUser(new CreateConfUser.Builder().withUserName(username.getText().toString())
                         .withEmail(email.getText().toString())
                         .build())
                 .build();

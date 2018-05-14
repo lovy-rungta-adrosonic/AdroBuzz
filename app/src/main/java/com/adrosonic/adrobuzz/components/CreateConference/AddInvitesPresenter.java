@@ -3,6 +3,7 @@ package com.adrosonic.adrobuzz.components.CreateConference;
 import android.content.Context;
 import android.util.Log;
 
+import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.contract.AddInvitesContract;
 import com.adrosonic.adrobuzz.interactor.AddInvitesInteractor;
 import com.adrosonic.adrobuzz.model.AddInvites;
@@ -20,10 +21,12 @@ public class AddInvitesPresenter implements AddInvitesContract.Presenter {
 
     private final AddInvitesContract.View view;
     private final AddInvitesInteractor mInteractor;
+    private final Context context;
 
     public AddInvitesPresenter(AddInvitesContract.View view, Context context, Service service) {
         this.view = view;
         mInteractor = new AddInvitesInteractor(context,service);
+        this.context=context;
     }
 
     @Override
@@ -54,7 +57,7 @@ public class AddInvitesPresenter implements AddInvitesContract.Presenter {
             });
         }else{
             view.setLoadingIndicator(false);
-            view.showLoadingError("Please add atleast one invite");
+            view.showLoadingError(context.getString(R.string.add_error_please_add_atleast_one_invite));
         }
     }
 }

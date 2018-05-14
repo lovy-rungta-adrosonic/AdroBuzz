@@ -1,5 +1,6 @@
 package com.adrosonic.adrobuzz.Utils;
 
+import java.io.File;
 import java.util.Date;
 
 /**
@@ -18,4 +19,14 @@ public class Utility {
             return 1;
     }
 
+    public static  String  filePath(){
+        File r = android.os.Environment.getExternalStorageDirectory();
+        File file = new File(r.getAbsolutePath() + "/Adro/Text");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        String filePath = r.getAbsolutePath() + "/Adro/Text/" +
+                "AdroBuzz" + ".txt";
+        return filePath;
+    }
 }

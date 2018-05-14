@@ -1,5 +1,6 @@
 package com.adrosonic.adrobuzz.components.JoinConference;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,9 +12,11 @@ import android.widget.Toast;
 
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.components.CreateConference.CreateConferencePresenter;
+import com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextActivity;
 import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.contract.JoinConferenceContract;
 import com.adrosonic.adrobuzz.databinding.ActivityJoinConferenceBinding;
+import com.adrosonic.adrobuzz.model.JoinConf;
 import com.adrosonic.adrobuzz.model.JoinConfRequest;
 import com.adrosonic.adrobuzz.sync.api.Service;
 
@@ -26,7 +29,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import retrofit2.Retrofit;
 
-public class JoinConference extends AppCompatActivity implements Validator.ValidationListener, JoinConferenceContract.View{
+public class JoinConference extends AppCompatActivity implements Validator.ValidationListener, JoinConferenceContract.View {
 
     JoinConfRequest request;
 
@@ -57,14 +60,14 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_join_conference);
 
         final View view = mBinding.getRoot();
-        unbinder =  ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         validator = new Validator(mBinding);
         validator.setValidationListener(this);
 
         ((App) getApplication()).getAppComponent().inject(this);
 
         Service service = retrofit.create(Service.class);
-        mPresenter = new JoinConferencePresenter(this,this,service);
+        mPresenter = new JoinConferencePresenter(this, this, service);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mBinding.setJoinConf(false);
@@ -119,6 +122,18 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
     public String getConfId() {
         EditText confId = findViewById(R.id.conf_id);
         return confId.getText().toString();
+    }
+
+    @Override
+    public void showLoadingError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void joinedConference(JoinConf joinConf) {
+        Intent speechToText = new Intent(getBaseContext(), SpeechToTextActivity.class);
+        speechToText.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(speechToText);
     }
 
 }

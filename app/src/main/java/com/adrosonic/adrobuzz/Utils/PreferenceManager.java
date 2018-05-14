@@ -27,6 +27,8 @@ public class PreferenceManager {
     private static final String CONFERENCE_STATUS = "conference_status";
     private static final String EMAIL_SENT = "email_sent";
     private static final String CONFERENCE_SUMMARY = "conference_summary";
+    private static final String IS_JOINED_CONFERENCE = "is_joined_conference";
+    private static final String CONFERENCE_SUBJECT = "conference_subject";
 
     private Context mContext;
 
@@ -267,4 +269,48 @@ public class PreferenceManager {
         }
 
     }
+
+    public void setIsJoinedConference(boolean status) {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            sharedPreferences.edit()
+                    .putBoolean(IS_JOINED_CONFERENCE, status)
+                    .apply();
+
+        }
+
+    }
+
+    public boolean getIsJoinedConference() {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            return sharedPreferences.getBoolean(IS_JOINED_CONFERENCE, false);
+
+        } else {
+            return false;
+        }
+
+    }
+
+    public void setConferenceSubject(String subject) {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            sharedPreferences.edit()
+                    .putString(CONFERENCE_SUBJECT, subject)
+                    .apply();
+
+        }
+    }
+
+    public String getConferenceSubject() {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            return sharedPreferences.getString(CONFERENCE_SUBJECT, "");
+
+        } else {
+            return "";
+        }
+
+    }
+
 }

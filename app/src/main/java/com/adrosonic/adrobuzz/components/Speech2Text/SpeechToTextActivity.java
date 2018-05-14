@@ -1,12 +1,17 @@
 package com.adrosonic.adrobuzz.components.Speech2Text;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.databinding.DataBindingUtil;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -22,6 +27,7 @@ import android.widget.Toast;
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.Utils.BasePermissionActivity;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
+import com.adrosonic.adrobuzz.Utils.Utility;
 import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.components.main.MainActivity;
 import com.adrosonic.adrobuzz.contract.SpeechToTextContract;
@@ -30,6 +36,12 @@ import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.translation_engine.TranslatorFactory;
 import com.adrosonic.adrobuzz.translation_engine.translators.IConvertor;
 import com.adrosonic.adrobuzz.translation_engine.utils.ConversionCallaback;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -107,20 +119,22 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         }
         sttOutput.setText(PreferenceManager.getInstance(this).getConferenceSummary());
 
-         confStatus = PreferenceManager.getInstance(this).getConferenceStatus();
+        confStatus = PreferenceManager.getInstance(this).getConferenceStatus();
         switch (confStatus) {
             case 2:
             default:
                 send.setVisibility(View.INVISIBLE);
                 mBinding.setEditSummary(false);
                 if (!isAdmin) {
-                    dataRefreshTimer = new CountDownTimer(120000, 1000) {
+                    dataRefreshTimer = new CountDownTimer(5000, 1000) {
                         @Override
+
                         public void onTick(long l) {
                         }
 
                         @Override
                         public void onFinish() {
+                            Log.v(TAG, "TIMER FINISH");
                             mPresenter.getConferenceStatus();
                             dataRefreshTimer.start();
                         }
@@ -128,7 +142,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                 }
                 break;
             case 3:
-               setUpViewConfEnded();
+                setUpViewConfEnded();
                 if (isAdmin) {
                     endConf.setVisibility(View.GONE);
                     PreferenceManager.getInstance(this).setAdminEndedConference(true);
@@ -143,24 +157,34 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         checkForPermission();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopTimer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startTimer();
+    }
+
     @OnClick({R.id.startRecording, R.id.stopRecording, R.id.endConf, R.id.send_mail, R.id.logout, R.id.edit})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startRecording:
-                Toast.makeText(this, "Recording started", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
                 audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
                 TranslatorFactory.getInstance().
                         getTranslator(SpeechToTextActivity.this).
                         initialize("Hello There", SpeechToTextActivity.this);
-                Log.d(TAG, "START LISTENING");
                 setUpView(false);
                 break;
 
             case R.id.stopRecording:
-                Toast.makeText(this, "Recording stopped", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.recording_stopped, Toast.LENGTH_SHORT).show();
                 stopRecording();
                 audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-                Log.d(TAG, "STOP LISTENING");
                 setUpView(true);
                 break;
 
@@ -175,10 +199,30 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                 break;
 
             case R.id.send_mail:
-                Toast.makeText(this, "Mail Sent", Toast.LENGTH_SHORT).show();
+
+                File file = new File(Utility.filePath());
+                if (file.exists()) {
+                    file.delete();
+                }
+                String summary = PreferenceManager.getInstance(SpeechToTextActivity.this).getConferenceSummary();
+                FileWriter writer;
+                try {
+                    writer = new FileWriter(file);
+                    writer.write(summary);
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 PreferenceManager.getInstance(this).setEmailSent(true);
-                //TODO send mail form admin to all
-                // TODO send mail to self
+                if (isAdmin) {
+                    //TODO send mail form admin to all
+                    sendEmail();
+                } else {
+                    // TODO send mail to self
+                }
+
                 break;
 
             case R.id.logout:
@@ -216,7 +260,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                 userInput.setSelection(textLength, textLength);
                 alertDialogBuilder
                         .setCancelable(false)
-                        .setPositiveButton("Save",
+                        .setPositiveButton(R.string.save,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         sttOutput.setText(userInput.getText());
@@ -224,7 +268,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                                         PreferenceManager.getInstance(SpeechToTextActivity.this).setConferenceSummary(userInput.getText().toString());
                                     }
                                 })
-                        .setNegativeButton("Cancel",
+                        .setNegativeButton(R.string.cancel,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
@@ -246,9 +290,9 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
     @Override
     public void updateWithPermission(boolean granted) {
         if (granted) {
-            if(confStatus == 3){
+            if (confStatus == 3) {
 
-            }else{
+            } else {
                 setUpView(true);
             }
         } else {
@@ -271,7 +315,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
 
     @Override
     public void onCompletion() {
-        Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.done, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -321,19 +365,20 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
 
     @Override
     public void confStatus(int status) {
-        showAlert("Conference has been ended by admin");
+        showAlert(getString(R.string.msg_conference_ended_by_admin));
         setUpViewConfEnded();
+        stopTimer();
     }
 
     private void setUpView(boolean flag) {
-        if(flag){
+        if (flag) {
             startRecording.setVisibility(View.VISIBLE);
-            statusOfRecording.setText("Start Recording");
+            statusOfRecording.setText(R.string.start_recording);
             stopRecording.setVisibility(View.GONE);
-        }else{
+        } else {
             startRecording.setVisibility(View.GONE);
             stopRecording.setVisibility(View.VISIBLE);
-            statusOfRecording.setText("Stop Recording");
+            statusOfRecording.setText(R.string.stop_recording);
         }
 
     }
@@ -343,14 +388,14 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         mBinding.setEditSummary(true);
         startRecording.setVisibility(View.GONE);
         stopRecording.setVisibility(View.GONE);
-        statusOfRecording.setVisibility(View.GONE);
+        statusOfRecording.setVisibility(View.INVISIBLE);
     }
 
     public void showAlert(String message) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setMessage(message);
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -361,29 +406,29 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
 
         Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
         LinearLayout.LayoutParams neutralButtonLL = (LinearLayout.LayoutParams) neutralButton.getLayoutParams();
-        neutralButtonLL.weight= 10;
+        neutralButtonLL.weight = 10;
         neutralButton.setLayoutParams(neutralButtonLL);
     }
 
     public void showAlertEmailBeforeLogOutAdmin() {
         AlertDialog alertDialog = new AlertDialog.Builder(SpeechToTextActivity.this).create();
-        alertDialog.setMessage("Do you want to send email before logging out");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Send",
+        alertDialog.setMessage(getString(R.string.msg_do_you_want_to_send_email_before_logging_out));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.send),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        //TODO send mail
+                        //TODO send mail for admin
 
                     }
                 });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 });
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Logout",
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.logout),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         clearPrefsAndExit();
@@ -406,16 +451,16 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
 
     public void showAlertEmailBeforeLogOutNonAdmin() {
         AlertDialog alertDialog = new AlertDialog.Builder(SpeechToTextActivity.this).create();
-        alertDialog.setMessage("Do you want to send email before logging out");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Send",
+        alertDialog.setMessage(getString(R.string.msg_do_you_want_to_send_email_before_logging_out));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.send),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        //TODO send mail for non admin
 
-                        //TODO send mail
 
                     }
                 });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         startTimer();
@@ -424,7 +469,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                     }
                 });
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Logout",
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.logout),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         clearPrefsAndExit();
@@ -448,14 +493,14 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
     public void showAlertSureToLogout() {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setMessage("Are you sure you want to logout");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
+        alertDialog.setMessage(getString(R.string.msg_are_you_sure_you_want_to_logout));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         clearPrefsAndExit();
                     }
                 });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -477,8 +522,8 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         final boolean isEmailSent = PreferenceManager.getInstance(this).getEmailSent();
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setMessage("Conference has not been ended yet. Are you sure you want to leave conference?");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
+        alertDialog.setMessage(getString(R.string.msg_conference_not_ended_sure_you_want_to_logout));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (isEmailSent) {
@@ -488,7 +533,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                         }
                     }
                 });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -511,8 +556,8 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
 
     public void showAlertEndConference() {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setMessage("Please end conference before logging off");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+        alertDialog.setMessage(getString(R.string.msg_end_conference_before_logging_off));
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -523,7 +568,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
 
         Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
         LinearLayout.LayoutParams neutralButtonLL = (LinearLayout.LayoutParams) neutralButton.getLayoutParams();
-        neutralButtonLL.weight= 10;
+        neutralButtonLL.weight = 10;
         neutralButton.setLayoutParams(neutralButtonLL);
     }
 
@@ -563,4 +608,92 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         }
     }
 
+    public void sendEmail() {
+        try {
+            PackageManager pm =this.getPackageManager();
+            ResolveInfo selectedEmailActivity = null;
+
+            Intent emailDummyIntent = new Intent(Intent.ACTION_SENDTO);
+            emailDummyIntent.setData(Uri.parse("mailto:test@gmail.com"));
+            List<ResolveInfo> emailActivities = pm.queryIntentActivities(emailDummyIntent, 0);
+            if (null == emailActivities || emailActivities.size() == 0) {
+                Intent emailDummyIntentRFC822 = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                emailDummyIntentRFC822.setType("message/rfc822");
+                emailActivities = pm.queryIntentActivities(emailDummyIntentRFC822, 0);
+            }
+            if (null != emailActivities) {
+                if (emailActivities.size() == 1) {
+                    selectedEmailActivity = emailActivities.get(0);
+                } else {
+                    for (ResolveInfo currAvailableEmailActivity : emailActivities) {
+                        if (currAvailableEmailActivity.isDefault) {
+                            selectedEmailActivity = currAvailableEmailActivity;
+                        }
+                    }
+                }
+
+                if (null != selectedEmailActivity) {
+                    sendEmailUsingSelectedEmailApp(selectedEmailActivity);
+                } else {
+                    final List<ResolveInfo> emailActivitiesForDialog = emailActivities;
+                    String[] availableEmailAppsName = new String[emailActivitiesForDialog.size()];
+                    for (int i = 0; i < emailActivitiesForDialog.size(); i++) {
+                        availableEmailAppsName[i] = emailActivitiesForDialog.get(i).activityInfo.applicationInfo.loadLabel(pm).toString();
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Please select Email Client");
+                    builder.setItems(availableEmailAppsName, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            sendEmailUsingSelectedEmailApp(emailActivitiesForDialog.get(which));
+                        }
+                    });
+                    builder.create().show();
+                }
+            } else {
+                sendEmailUsingSelectedEmailApp(null);
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "Can't send email", ex);
+        }
+    }
+
+    private void sendEmailUsingSelectedEmailApp(ResolveInfo p_selectedEmailApp) {
+        try {
+
+            String confID = PreferenceManager.getInstance(this).getConfID();
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+
+            Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            String aEmailList[] = {"lovy.rungta@adrosonic" +
+                    "" +
+                    ".com"};
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, aEmailList);
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Summary for Conference "+confID);
+            emailIntent.putExtra(Intent.EXTRA_TEXT, body());
+
+            ArrayList<Uri> attachmentsUris = new ArrayList<>();
+
+            File fileIn = new File(Utility.filePath());
+            Uri currAttachemntUri = Uri.fromFile(fileIn);
+            attachmentsUris.add(currAttachemntUri);
+            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, attachmentsUris);
+
+            if (null != p_selectedEmailApp) {
+                Log.d(TAG, "Sending email using " + p_selectedEmailApp);
+                emailIntent.setComponent(new ComponentName(p_selectedEmailApp.activityInfo.packageName, p_selectedEmailApp.activityInfo.name));
+                this.startActivity(emailIntent);
+            } else {
+                Intent emailAppChooser = Intent.createChooser(emailIntent, "Select Email app");
+                this.startActivity(emailAppChooser);
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "Error sending email", ex);
+        }
+    }
+
+    public String body(){
+        return "Dear User,\n\nThank you for attending the conference. Please find attached conference summary.\n\nRegards,\nAdroBuzz Team";
+    }
 }

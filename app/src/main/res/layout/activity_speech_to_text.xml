@@ -26,7 +26,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/user"
+            android:id="@+id/createConfUser"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/colorPrimaryDark"
@@ -36,8 +36,8 @@
             <ImageView
                 android:id="@+id/logout"
                 android:clickable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 app:srcCompat="@drawable/ic_logout"/>
@@ -53,8 +53,8 @@
 
             <ImageView
                 android:id="@+id/send_mail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_send_email"
                 android:clickable="true"/>
@@ -65,7 +65,7 @@
             android:id="@+id/conf_subj"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/user"
+            android:layout_below="@+id/createConfUser"
             android:background="@color/colorAccent"
             android:padding="8dp"
             android:paddingLeft="16dp"
@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_below="@+id/wrap"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="24dp"
             android:background="@color/dark_gray" />
 
         <android.support.design.widget.FloatingActionButton

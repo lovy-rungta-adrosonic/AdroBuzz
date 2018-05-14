@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.adrosonic.adrobuzz.model.APIResponse;
 import com.adrosonic.adrobuzz.model.AddInvites;
+import com.adrosonic.adrobuzz.model.JoinConf;
 import com.adrosonic.adrobuzz.model.JoinConfRequest;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
@@ -19,6 +20,8 @@ public interface JoinConferenceContract {
         void setLoadingIndicator(boolean active);
         JoinConfRequest getParameters();
         String getConfId();
+        void showLoadingError(String error);
+        void joinedConference(JoinConf joinConf);
     }
 
     interface Presenter {
@@ -29,7 +32,7 @@ public interface JoinConferenceContract {
         void joinConference(String confId, JoinConfRequest request, @NonNull JoinConferenceContract.UseCase.Completion completion);
 
         interface Completion {
-            void didReceiveResource(Resource<APIResponse> resource);
+            void didReceiveResource(Resource<JoinConf> resource);
         }
     }
 }

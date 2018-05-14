@@ -72,7 +72,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/conference_id"
                         android:imeOptions="actionNext"
-                        android:inputType="textNoSuggestions|number"
+                        android:inputType="textNoSuggestions"
                         android:singleLine="true"
                         android:theme="@style/EditTextTheme"
                         app:validateEmpty="@{true}"

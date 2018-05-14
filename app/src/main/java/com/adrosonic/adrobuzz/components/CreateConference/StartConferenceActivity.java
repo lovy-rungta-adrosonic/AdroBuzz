@@ -119,6 +119,7 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
     @Override
     public void conferenceStarted() {
         Intent speechToText = new Intent(getBaseContext(), SpeechToTextActivity.class);
+        speechToText.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(speechToText);
     }
 

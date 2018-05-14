@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class JoinConfRequest {
-    @SerializedName("name")
+    @SerializedName("userName")
     private String name;
     @SerializedName("email")
     private String email;

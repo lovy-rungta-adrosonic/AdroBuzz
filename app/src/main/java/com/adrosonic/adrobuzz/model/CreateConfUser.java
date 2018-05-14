@@ -1,13 +1,10 @@
 package com.adrosonic.adrobuzz.model;
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
 
 /**
  * Awesome Pojo Generator
  * */
-public class User {
+public class CreateConfUser {
   @SerializedName("userName")
   private String userName;
   @SerializedName("email")
@@ -30,21 +27,21 @@ public class User {
         private String mUserName;
         private String mEmail;
 
-        public User.Builder withUserName(String username) {
+        public CreateConfUser.Builder withUserName(String username) {
             mUserName = username;
             return this;
         }
 
-        public User.Builder withEmail(String email) {
+        public CreateConfUser.Builder withEmail(String email) {
             mEmail = email;
             return this;
         }
 
-        public User build() {
-            User user = new User();
-            user.userName = mUserName;
-            user.email = mEmail;
-            return user;
+        public CreateConfUser build() {
+            CreateConfUser createConfUser = new CreateConfUser();
+            createConfUser.userName = mUserName;
+            createConfUser.email = mEmail;
+            return createConfUser;
         }
 
     }

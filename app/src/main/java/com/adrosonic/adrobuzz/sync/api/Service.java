@@ -5,6 +5,7 @@ import com.adrosonic.adrobuzz.model.AddInvites;
 import com.adrosonic.adrobuzz.model.ConferenceStatus;
 import com.adrosonic.adrobuzz.model.CreateConf;
 import com.adrosonic.adrobuzz.model.CreateConfRequest;
+import com.adrosonic.adrobuzz.model.JoinConf;
 import com.adrosonic.adrobuzz.model.JoinConfRequest;
 import com.adrosonic.adrobuzz.model.StartConf;
 
@@ -38,5 +39,5 @@ public interface Service {
     Call<ConferenceStatus> endConference(@Path("param") String id);
 
     @POST("joinConference/{param}")
-    Call<APIResponse> joinConference(@Path("param") String id,@Body JoinConfRequest body);
+    Call<JoinConf> joinConference(@Path("param") String id, @Body JoinConfRequest body);
 }

@@ -8,6 +8,7 @@ import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.AddInvitesContract;
 import com.adrosonic.adrobuzz.contract.JoinConferenceContract;
 import com.adrosonic.adrobuzz.model.CreateConf;
+import com.adrosonic.adrobuzz.model.JoinConf;
 import com.adrosonic.adrobuzz.model.JoinConfRequest;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
@@ -43,52 +44,76 @@ public class JoinConferenceInteractor implements JoinConferenceContract.UseCase 
             @Override
             public void run() {
 
-//                mService.joinConference(confId,request).enqueue(new Callback<CreateConf>() {
-//                    @Override
-//                    public void onResponse(Call<CreateConf> call, final Response<CreateConf> response) {
-//                        if (response.isSuccessful()) {
-//                            final CreateConf body = response.body();
-//                            Log.v(TAG, "joinConference: success: \n"+ body.getDataConfStatus());
-//                            mExecutors.diskIO().execute(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    PreferenceManager.getInstance(mContext).setIsAdmin(true);
-//                                    PreferenceManager.getInstance(mContext).setConfID(body.getDataConfStatus());
-//                                    PreferenceManager.getInstance(mContext).setConfParams(request);
-//                                }
-//                            });
-//                            mExecutors.mainThread().execute(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    completion.didReceiveResource(Resource.success(body));
-//                                }
-//                            });
-//                        } else {
-//                            try {
-//                                final String string = response.errorBody()
-//                                        .string();
-//                                Log.e(TAG, "joinConference: errorBody: \n" + string);
-//                            } catch (IOException | NullPointerException e) {
-//                                Log.e(TAG, "joinConference: errorBody: \n" + e.getMessage());
-//                            }
-//                            mExecutors.mainThread().execute(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    CreateConf conf = null;
-//                                    completion.didReceiveResource(Resource.error("Failed to joinConference",
-//                                            conf));
-//                                }
-//                            });
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<CreateConf> call, Throwable t) {
-//                        Log.e(TAG, "joinConference: onFailure: \n", t);
-//                        CreateConf conf = null;
-//                        completion.didReceiveResource(Resource.error(t.getMessage(), conf));
-//                    }
-//                });
+                mService.joinConference(confId,request).enqueue(new Callback<JoinConf>() {
+                    @Override
+                    public void onResponse(Call<JoinConf> call, final Response<JoinConf> response) {
+                        if (response.isSuccessful()) {
+                            final JoinConf body = response.body();
+                            if(body!=null){
+                                int status = body.getStatus();
+                                if(status == 0){
+                                    Log.v(TAG, "joinConference: success: \n"+ body.getStatus());
+                                    mExecutors.diskIO().execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            PreferenceManager.getInstance(mContext).setIsAdmin(false);
+                                            PreferenceManager.getInstance(mContext).setIsJoinedConference(true);
+                                            PreferenceManager.getInstance(mContext).setConfID(confId);
+                                            PreferenceManager.getInstance(mContext).setConferenceSubject(body.getData().getName());
+                                        }
+                                    });
+                                    mExecutors.mainThread().execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            completion.didReceiveResource(Resource.success(body));
+                                        }
+                                    });
+                                }else{
+                                    mExecutors.mainThread().execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            JoinConf conf = null;
+                                            completion.didReceiveResource(Resource.error("Failed to joinConference due to invalid credentials",
+                                                    conf));
+                                        }
+                                    });
+                                }
+                            }else{
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        JoinConf conf = null;
+                                        completion.didReceiveResource(Resource.error("Failed to joinConference",
+                                                conf));
+                                    }
+                                });
+                            }
+                        } else {
+                            try {
+                                final String string = response.errorBody()
+                                        .string();
+                                Log.e(TAG, "joinConference: errorBody: \n" + string);
+                            } catch (IOException | NullPointerException e) {
+                                Log.e(TAG, "joinConference: errorBody: \n" + e.getMessage());
+                            }
+                            mExecutors.mainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    JoinConf conf = null;
+                                    completion.didReceiveResource(Resource.error("Failed to joinConference",
+                                            conf));
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JoinConf> call, Throwable t) {
+                        Log.e(TAG, "joinConference: onFailure: \n", t);
+                        JoinConf conf = null;
+                        completion.didReceiveResource(Resource.error(t.getMessage(), conf));
+                    }
+                });
             }
         });
     }

@@ -56,6 +56,7 @@ public class CreateConferenceInteractor implements CreateConferenceContract.UseC
                                     PreferenceManager.getInstance(mContext).setIsAdmin(true);
                                     PreferenceManager.getInstance(mContext).setConfID(body.getData());
                                     PreferenceManager.getInstance(mContext).setConfParams(request);
+                                    PreferenceManager.getInstance(mContext).setConferenceSubject(request.getName());
                                 }
                             });
                             mExecutors.mainThread().execute(new Runnable() {
