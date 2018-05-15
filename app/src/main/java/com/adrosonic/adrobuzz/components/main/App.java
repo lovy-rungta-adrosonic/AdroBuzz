@@ -2,15 +2,17 @@ package com.adrosonic.adrobuzz.components.main;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
+import com.adrosonic.adrobuzz.Utils.Utility;
 import com.adrosonic.adrobuzz.contract.SpeechToTextContract;
 import com.adrosonic.adrobuzz.di.AppComponent;
 import com.adrosonic.adrobuzz.di.AppModule;
 import com.adrosonic.adrobuzz.di.DaggerAppComponent;
 import com.adrosonic.adrobuzz.interactor.SpeechToTextInteractor;
-import com.adrosonic.adrobuzz.model.ConferenceStatus;
-import com.adrosonic.adrobuzz.model.DataConfStatus;
+import com.adrosonic.adrobuzz.model.ConfStatus.ConferenceStatus;
+import com.adrosonic.adrobuzz.model.ConfStatus.DataConfStatus;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.api.SyncModule;
 import com.adrosonic.adrobuzz.sync.network.Resource;
@@ -51,6 +53,7 @@ public class App extends Application {
         final Service service = retrofit.create(Service.class);
 
         String confId = PreferenceManager.getInstance(getApplicationContext()).getConfID();
+
         if(!confId.isEmpty()){
             SpeechToTextInteractor mInteractor = new SpeechToTextInteractor(getApplicationContext(),service);
             mInteractor .getConferenceStatus(new SpeechToTextContract.UseCase.Completion() {

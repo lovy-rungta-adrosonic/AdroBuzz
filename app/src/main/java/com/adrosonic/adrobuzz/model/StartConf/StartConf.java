@@ -1,26 +1,29 @@
-package com.adrosonic.adrobuzz.model;
+package com.adrosonic.adrobuzz.model.StartConf;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 /**
  * Awesome Pojo Generator
  * */
-public class CreateConf{
+public class StartConf{
   @SerializedName("data")
-  private String data;
+  @Expose
+  private Object data;
   @SerializedName("error")
-  private Object error;
+  @Expose
+  private String error;
   @SerializedName("status")
+  @Expose
   private Integer status;
-  public void setData(String data){
+  public void setData(Object data){
    this.data=data;
   }
-  public String getData(){
+  public Object getData(){
    return data;
   }
-  public void setError(Object error){
+  public void setError(String error){
    this.error=error;
   }
-  public Object getError(){
+  public String getError(){
    return error;
   }
   public void setStatus(Integer status){

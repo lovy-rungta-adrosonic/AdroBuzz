@@ -5,8 +5,9 @@ import android.content.Context;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.SpeechToTextContract;
 import com.adrosonic.adrobuzz.interactor.SpeechToTextInteractor;
-import com.adrosonic.adrobuzz.model.ConferenceStatus;
-import com.adrosonic.adrobuzz.model.DataConfStatus;
+import com.adrosonic.adrobuzz.model.ConfAttendees.ConfAttendees;
+import com.adrosonic.adrobuzz.model.ConfStatus.ConferenceStatus;
+import com.adrosonic.adrobuzz.model.ConfStatus.DataConfStatus;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
@@ -139,6 +140,28 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter {
                             view.finalConfStatus(0);
                         }
 
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getConferenceAttendees() {
+        mInteractor.getConferenceAttendees(new SpeechToTextContract.UseCase.ConfAttendeesCompletion() {
+            @Override
+            public void didReceiveResource(Resource<ConfAttendees> resource) {
+                view.setLoadingIndicator(false);
+                switch (resource.status) {
+                    case LOADING:
+                        break;
+                    case ERROR:
+                        view.showError(resource.message);
+                        break;
+                    case SUCCESS:
+                        view.showAttendeeList();
                         break;
                     default:
                         break;

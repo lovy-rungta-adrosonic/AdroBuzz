@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
+import com.adrosonic.adrobuzz.Utils.Utility;
 import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextActivity;
 import com.adrosonic.adrobuzz.contract.StartConferenceContract;
@@ -96,8 +97,12 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
                 break;
 
             case R.id.start_conference:
-                mBinding.setStatusLoading(true);
-                mPresenter.startConference();
+                if(Utility.checkIfInternetConnected(this)){
+                    mBinding.setStatusLoading(true);
+                    mPresenter.startConference();
+                }else{
+                    Utility.noInternetConnection(this);
+                }
                 break;
 
             default:

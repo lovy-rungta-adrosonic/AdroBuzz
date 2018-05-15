@@ -66,16 +66,17 @@
                     android:layout_marginRight="16dp"
                     android:theme="@style/TextLabel">
 
-                    <EditText
+                    <com.adrosonic.adrobuzz.Utils.PrefixEditText
                         android:id="@+id/conf_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/conference_id"
                         android:imeOptions="actionNext"
-                        android:inputType="textNoSuggestions"
+                        android:inputType="textNoSuggestions|number"
                         android:singleLine="true"
                         android:theme="@style/EditTextTheme"
                         app:validateEmpty="@{true}"
+                        android:digits="0123456789"
                         app:validateEmptyAutoDismiss="@{true}"
                         app:validateEmptyMessage="@{@string/conference_id_empty}" />
 

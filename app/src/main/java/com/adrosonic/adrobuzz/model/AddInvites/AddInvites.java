@@ -1,29 +1,29 @@
-package com.adrosonic.adrobuzz.model;
+package com.adrosonic.adrobuzz.model.AddInvites;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 /**
  * Awesome Pojo Generator
  * */
-public class ConferenceStatus{
+public class AddInvites{
   @SerializedName("data")
   @Expose
-  private DataConfStatus dataConfStatus;
+  private Object data;
   @SerializedName("error")
   @Expose
-  private Object error;
+  private String error;
   @SerializedName("status")
   @Expose
   private Integer status;
-  public void setDataConfStatus(DataConfStatus dataConfStatus){
-   this.dataConfStatus = dataConfStatus;
+  public void setData(Object data){
+   this.data=data;
   }
-  public DataConfStatus getDataConfStatus(){
-   return dataConfStatus;
+  public Object getData(){
+   return data;
   }
-  public void setError(Object error){
+  public void setError(String error){
    this.error=error;
   }
-  public Object getError(){
+  public String getError(){
    return error;
   }
   public void setStatus(Integer status){

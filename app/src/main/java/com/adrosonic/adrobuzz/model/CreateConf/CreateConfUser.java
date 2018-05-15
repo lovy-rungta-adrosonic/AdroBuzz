@@ -1,4 +1,4 @@
-package com.adrosonic.adrobuzz.model;
+package com.adrosonic.adrobuzz.model.CreateConf;
 import com.google.gson.annotations.SerializedName;
 
 /**

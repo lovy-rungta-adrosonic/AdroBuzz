@@ -1,13 +1,13 @@
 package com.adrosonic.adrobuzz.sync.api;
 
-import com.adrosonic.adrobuzz.model.APIResponse;
-import com.adrosonic.adrobuzz.model.AddInvites;
-import com.adrosonic.adrobuzz.model.ConferenceStatus;
-import com.adrosonic.adrobuzz.model.CreateConf;
-import com.adrosonic.adrobuzz.model.CreateConfRequest;
-import com.adrosonic.adrobuzz.model.JoinConf;
-import com.adrosonic.adrobuzz.model.JoinConfRequest;
-import com.adrosonic.adrobuzz.model.StartConf;
+import com.adrosonic.adrobuzz.model.AddInvites.AddInvites;
+import com.adrosonic.adrobuzz.model.ConfAttendees.ConfAttendees;
+import com.adrosonic.adrobuzz.model.ConfStatus.ConferenceStatus;
+import com.adrosonic.adrobuzz.model.CreateConf.CreateConf;
+import com.adrosonic.adrobuzz.model.CreateConf.CreateConfRequest;
+import com.adrosonic.adrobuzz.model.JoinConf.JoinConf;
+import com.adrosonic.adrobuzz.model.JoinConf.JoinConfRequest;
+import com.adrosonic.adrobuzz.model.StartConf.StartConf;
 
 import java.util.ArrayList;
 
@@ -40,4 +40,7 @@ public interface Service {
 
     @POST("joinConference/{param}")
     Call<JoinConf> joinConference(@Path("param") String id, @Body JoinConfRequest body);
+
+    @GET("getConferenceAttendes/{param}")
+    Call<ConfAttendees> getConferenceAttende(@Path("param") String id);
 }

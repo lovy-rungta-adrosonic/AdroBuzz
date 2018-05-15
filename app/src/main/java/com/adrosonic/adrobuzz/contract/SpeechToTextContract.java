@@ -2,7 +2,8 @@ package com.adrosonic.adrobuzz.contract;
 
 import android.support.annotation.NonNull;
 
-import com.adrosonic.adrobuzz.model.ConferenceStatus;
+import com.adrosonic.adrobuzz.model.ConfAttendees.ConfAttendees;
+import com.adrosonic.adrobuzz.model.ConfStatus.ConferenceStatus;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
 /**
@@ -17,6 +18,7 @@ public interface SpeechToTextContract {
         void showError(String message);
         void finalConfStatus(int status);
         void confStatus(int status);
+        void showAttendeeList();
     }
 
     interface  Presenter{
@@ -24,14 +26,20 @@ public interface SpeechToTextContract {
         void endConference();
         void getConferenceStatus();
         void getConferenceStatusLogOut();
+        void getConferenceAttendees();
     }
 
     interface UseCase{
         void endConference(@NonNull Completion completion);
         void getConferenceStatus(@NonNull Completion completion);
+        void getConferenceAttendees(@NonNull ConfAttendeesCompletion completion);
 
         interface Completion {
             void didReceiveResource(Resource<ConferenceStatus> resource);
+        }
+
+        interface ConfAttendeesCompletion {
+            void didReceiveResource(Resource<ConfAttendees> resource);
         }
 
     }

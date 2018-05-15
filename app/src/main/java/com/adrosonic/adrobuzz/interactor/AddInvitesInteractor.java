@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.AddInvitesContract;
-import com.adrosonic.adrobuzz.model.AddInvites;
+import com.adrosonic.adrobuzz.model.AddInvites.AddInvites;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
 import com.adrosonic.adrobuzz.sync.network.Resource;

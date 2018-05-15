@@ -20,9 +20,9 @@ import com.adrosonic.adrobuzz.Utils.Utility;
 import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.contract.CreateConferenceContract;
 import com.adrosonic.adrobuzz.databinding.ActivityCreateConferenceBinding;
-import com.adrosonic.adrobuzz.model.CreateConf;
-import com.adrosonic.adrobuzz.model.CreateConfRequest;
-import com.adrosonic.adrobuzz.model.CreateConfUser;
+import com.adrosonic.adrobuzz.model.CreateConf.CreateConf;
+import com.adrosonic.adrobuzz.model.CreateConf.CreateConfRequest;
+import com.adrosonic.adrobuzz.model.CreateConf.CreateConfUser;
 import com.adrosonic.adrobuzz.sync.api.Service;
 
 import java.text.ParseException;
@@ -149,8 +149,12 @@ public class CreateConference extends AppCompatActivity implements CreateConfere
 
     @Override
     public void onValidationSuccess() {
-        mBinding.setCreateConf(true);
-        mPresenter.fetchConferenceID();
+        if(Utility.checkIfInternetConnected(this)){
+            mBinding.setCreateConf(true);
+            mPresenter.fetchConferenceID();
+        }else{
+            Utility.noInternetConnection(this);
+        }
     }
 
     @Override
@@ -170,7 +174,6 @@ public class CreateConference extends AppCompatActivity implements CreateConfere
 
     @Override
     public void showConfID(CreateConf confID) {
-        // API CALL complete and launch start conference screen
         Intent start = new Intent(getBaseContext(), StartConferenceActivity.class);
         start.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(start);

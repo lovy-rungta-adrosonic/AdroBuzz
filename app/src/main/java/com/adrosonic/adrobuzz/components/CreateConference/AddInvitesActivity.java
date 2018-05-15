@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
+import com.adrosonic.adrobuzz.Utils.Utility;
 import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.contract.AddInvitesContract;
 import com.adrosonic.adrobuzz.databinding.ActivityAddInvitesBinding;
@@ -126,15 +127,18 @@ public class AddInvitesActivity extends AppCompatActivity implements AddInvitesC
             case R.id.send_invites:
 
                 listOfEmails = new ArrayList<>();
-
                 for (int i = 0; i < container.getChildCount(); i++) {
                     View row = container.getChildAt(i);
                     TextView text = row.findViewById(R.id.email);
                     String emailId = text.getText().toString();
                     listOfEmails.add(emailId);
                 }
-                mBinding.setStatus(true);
-                mPresenter.addInvites();
+                if(Utility.checkIfInternetConnected(this)){
+                    mBinding.setStatus(true);
+                    mPresenter.addInvites();
+                }else{
+                    Utility.noInternetConnection(this);
+                }
                 break;
 
             default:

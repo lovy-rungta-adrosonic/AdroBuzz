@@ -11,13 +11,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.adrosonic.adrobuzz.R;
-import com.adrosonic.adrobuzz.components.CreateConference.CreateConferencePresenter;
+import com.adrosonic.adrobuzz.Utils.Utility;
 import com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextActivity;
 import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.contract.JoinConferenceContract;
 import com.adrosonic.adrobuzz.databinding.ActivityJoinConferenceBinding;
-import com.adrosonic.adrobuzz.model.JoinConf;
-import com.adrosonic.adrobuzz.model.JoinConfRequest;
+import com.adrosonic.adrobuzz.model.JoinConf.JoinConf;
+import com.adrosonic.adrobuzz.model.JoinConf.JoinConfRequest;
 import com.adrosonic.adrobuzz.sync.api.Service;
 
 import javax.inject.Inject;
@@ -89,8 +89,12 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
 
     @Override
     public void onValidationSuccess() {
-        mBinding.setJoinConf(true);
-        mPresenter.joinConference();
+        if(Utility.checkIfInternetConnected(this)){
+            mBinding.setJoinConf(true);
+            mPresenter.joinConference();
+        }else{
+            Utility.noInternetConnection(this);
+        }
     }
 
     @Override
@@ -106,7 +110,6 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
     @Override
     public JoinConfRequest getParameters() {
 
-
         EditText username = findViewById(R.id.joinee_username);
         EditText email = findViewById(R.id.joinee_email);
 
@@ -121,7 +124,7 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
     @Override
     public String getConfId() {
         EditText confId = findViewById(R.id.conf_id);
-        return confId.getText().toString();
+        return "AB-"+confId.getText().toString();
     }
 
     @Override

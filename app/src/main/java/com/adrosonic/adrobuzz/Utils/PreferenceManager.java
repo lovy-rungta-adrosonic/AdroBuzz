@@ -3,7 +3,7 @@ package com.adrosonic.adrobuzz.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.adrosonic.adrobuzz.model.CreateConfRequest;
+import com.adrosonic.adrobuzz.model.CreateConf.CreateConfRequest;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -23,12 +23,12 @@ public class PreferenceManager {
     private static final String IS_ADMIN = "is_admin";
     private static final String CONF_PARAMS = "conf_params";
     private static final String LIST_OF_INVITEES = "list_of_invites";
-    private static final String IS_CONFERENCE_STARTED = "is_conference_started";
     private static final String CONFERENCE_STATUS = "conference_status";
     private static final String EMAIL_SENT = "email_sent";
     private static final String CONFERENCE_SUMMARY = "conference_summary";
-    private static final String IS_JOINED_CONFERENCE = "is_joined_conference";
+    private static final String JOINEE_USERNAME = "joinee_username";
     private static final String CONFERENCE_SUBJECT = "conference_subject";
+    private static final String CONFERENCE_ATTENDEES_LIST = "conference_attendees_list";
 
     private Context mContext;
 
@@ -45,13 +45,12 @@ public class PreferenceManager {
     public PreferenceManager() {
     }
 
-    public void clearSharedPreferences(){
+    public void clearSharedPreferences() {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             sharedPreferences.edit()
                     .clear()
                     .apply();
-
         }
     }
 
@@ -61,20 +60,16 @@ public class PreferenceManager {
             sharedPreferences.edit()
                     .putBoolean(IS_ADMIN, status)
                     .apply();
-
         }
-
     }
 
     public boolean getIsAdmin() {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             return sharedPreferences.getBoolean(IS_ADMIN, false);
-
         } else {
             return false;
         }
-
     }
 
     public void setAdminEndedConference(boolean status) {
@@ -83,20 +78,16 @@ public class PreferenceManager {
             sharedPreferences.edit()
                     .putBoolean(ADMIN_ENDED_CONFERENCE, status)
                     .apply();
-
         }
-
     }
 
     public boolean getAdminEndedConference() {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             return sharedPreferences.getBoolean(ADMIN_ENDED_CONFERENCE, false);
-
         } else {
             return false;
         }
-
     }
 
     public void setConfID(String confID) {
@@ -105,7 +96,6 @@ public class PreferenceManager {
             sharedPreferences.edit()
                     .putString(CONFERENCE_ID, confID)
                     .apply();
-
         }
     }
 
@@ -113,11 +103,9 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             return sharedPreferences.getString(CONFERENCE_ID, "");
-
         } else {
             return "";
         }
-
     }
 
     public void setConfParams(CreateConfRequest request) {
@@ -129,7 +117,6 @@ public class PreferenceManager {
                     .putString(CONF_PARAMS, json)
                     .apply();
         }
-
     }
 
     public CreateConfRequest getConfParams() {
@@ -142,7 +129,6 @@ public class PreferenceManager {
         } else {
             return null;
         }
-
     }
 
     public void setListOfInvitees(ArrayList<String> listOfInvitees) {
@@ -184,45 +170,19 @@ public class PreferenceManager {
         }
     }
 
-    public void setIsConferenceStarted(boolean started) {
-        SharedPreferences sharedPreferences = preferences(mContext);
-        if (sharedPreferences != null) {
-            sharedPreferences.edit()
-                    .putBoolean(IS_CONFERENCE_STARTED, started)
-                    .apply();
-
-        }
-
-    }
-
-    public boolean getIsConferenceStarted() {
-        SharedPreferences sharedPreferences = preferences(mContext);
-        if (sharedPreferences != null) {
-            return sharedPreferences.getBoolean(IS_CONFERENCE_STARTED, false);
-
-        } else {
-            return false;
-        }
-
-
-    }
-
     public void setConferenceStatus(int status) {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             sharedPreferences.edit()
                     .putInt(CONFERENCE_STATUS, status)
                     .apply();
-
         }
-
     }
 
     public int getConferenceStatus() {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             return sharedPreferences.getInt(CONFERENCE_STATUS, 0);
-
         } else {
             return 0;
         }
@@ -234,9 +194,7 @@ public class PreferenceManager {
             sharedPreferences.edit()
                     .putBoolean(EMAIL_SENT, status)
                     .apply();
-
         }
-
     }
 
     public boolean getEmailSent() {
@@ -255,7 +213,6 @@ public class PreferenceManager {
             sharedPreferences.edit()
                     .putString(CONFERENCE_SUMMARY, summary)
                     .apply();
-
         }
     }
 
@@ -263,33 +220,9 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             return sharedPreferences.getString(CONFERENCE_SUMMARY, "");
-
         } else {
             return "";
         }
-
-    }
-
-    public void setIsJoinedConference(boolean status) {
-        SharedPreferences sharedPreferences = preferences(mContext);
-        if (sharedPreferences != null) {
-            sharedPreferences.edit()
-                    .putBoolean(IS_JOINED_CONFERENCE, status)
-                    .apply();
-
-        }
-
-    }
-
-    public boolean getIsJoinedConference() {
-        SharedPreferences sharedPreferences = preferences(mContext);
-        if (sharedPreferences != null) {
-            return sharedPreferences.getBoolean(IS_JOINED_CONFERENCE, false);
-
-        } else {
-            return false;
-        }
-
     }
 
     public void setConferenceSubject(String subject) {
@@ -298,7 +231,6 @@ public class PreferenceManager {
             sharedPreferences.edit()
                     .putString(CONFERENCE_SUBJECT, subject)
                     .apply();
-
         }
     }
 
@@ -306,11 +238,66 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             return sharedPreferences.getString(CONFERENCE_SUBJECT, "");
-
         } else {
             return "";
         }
+    }
 
+    public void setJoineeUsername(String name) {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            sharedPreferences.edit()
+                    .putString(JOINEE_USERNAME, name)
+                    .apply();
+        }
+    }
+
+    public String getJoineeUsername() {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            return sharedPreferences.getString(JOINEE_USERNAME, "");
+        } else {
+            return "";
+        }
+    }
+
+    public void setConferenceAttendeesList(ArrayList<String> list) {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            Gson gson = new Gson();
+
+            ArrayList<String> temporary = new ArrayList<>();
+            String temp = sharedPreferences.getString(CONFERENCE_ATTENDEES_LIST, "");
+            String[] items = gson.fromJson(temp, String[].class);
+            if (items != null) {
+                List<String> listOfEmails = Arrays.asList(items);
+                temporary.addAll(listOfEmails);
+            }
+
+            temporary.addAll(list);
+            String json = gson.toJson(temporary);
+            sharedPreferences.edit()
+                    .putString(CONFERENCE_ATTENDEES_LIST, json)
+                    .apply();
+        }
+
+    }
+
+    public ArrayList<String> getConferenceAttendeesList() {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            Gson gson = new Gson();
+            String json = sharedPreferences.getString(CONFERENCE_ATTENDEES_LIST, "");
+            String[] items = gson.fromJson(json, String[].class);
+            if (items != null) {
+                List<String> listOfEmails = Arrays.asList(items);
+                return new ArrayList<>(listOfEmails);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
 }

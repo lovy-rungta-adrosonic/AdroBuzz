@@ -1,15 +1,12 @@
 package com.adrosonic.adrobuzz.components.JoinConference;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.adrosonic.adrobuzz.R;
-import com.adrosonic.adrobuzz.components.CreateConference.CreateConferencePresenter;
 import com.adrosonic.adrobuzz.contract.JoinConferenceContract;
 import com.adrosonic.adrobuzz.interactor.JoinConferenceInteractor;
-import com.adrosonic.adrobuzz.model.APIResponse;
-import com.adrosonic.adrobuzz.model.JoinConf;
-import com.adrosonic.adrobuzz.model.JoinConfRequest;
+import com.adrosonic.adrobuzz.model.JoinConf.JoinConf;
+import com.adrosonic.adrobuzz.model.JoinConf.JoinConfRequest;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 

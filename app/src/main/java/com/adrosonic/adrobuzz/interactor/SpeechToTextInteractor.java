@@ -6,12 +6,17 @@ import android.util.Log;
 
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.SpeechToTextContract;
-import com.adrosonic.adrobuzz.model.ConferenceStatus;
+import com.adrosonic.adrobuzz.model.ConfAttendees.AttendeesData;
+import com.adrosonic.adrobuzz.model.ConfAttendees.ConfAttendees;
+import com.adrosonic.adrobuzz.model.ConfStatus.ConferenceStatus;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -170,6 +175,88 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
                     public void onFailure(Call<ConferenceStatus> call, Throwable t) {
                         Log.e(TAG, "getConferenceStatus: onFailure: \n", t);
                         ConferenceStatus conf = null;
+                        completion.didReceiveResource(Resource.error(t.getMessage(), conf));
+                    }
+                });
+            }
+        });
+
+    }
+
+    @Override
+    public void getConferenceAttendees(final @NonNull ConfAttendeesCompletion completion) {
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                String confId = PreferenceManager.getInstance(mContext).getConfID();
+
+                mService.getConferenceAttende(confId).enqueue(new Callback<ConfAttendees>() {
+                    @Override
+                    public void onResponse(Call<ConfAttendees> call, final Response<ConfAttendees> response) {
+                        if (response.isSuccessful()) {
+
+                            final ConfAttendees body = response.body();
+                            if (body != null && body.getStatus() == 0) {
+                                Log.v(TAG, "getConferenceAttendees: success: \n" + body.getStatus());
+
+                                final ArrayList<String> emailList = new ArrayList<>();
+                                List<AttendeesData> listOfAttendees = body.getData();
+                                if (listOfAttendees.size() > 0) {
+                                    Iterator<AttendeesData> iterator = listOfAttendees.iterator();
+                                    while (iterator.hasNext()) {
+                                        AttendeesData data = iterator.next();
+                                        emailList.add(data.getEmail());
+                                    }
+                                    mExecutors.diskIO().execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                        PreferenceManager.getInstance(mContext).setConferenceAttendeesList(emailList);
+                                        }
+                                    });
+                                }
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        completion.didReceiveResource(Resource.success(body));
+                                    }
+                                });
+                            } else {
+
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ConfAttendees conf = null;
+                                        completion.didReceiveResource(Resource.error("Failed to getConferenceAttendees",
+                                                conf));
+                                    }
+                                });
+                            }
+
+                        } else {
+                            try {
+                                final String string = response.errorBody()
+                                        .string();
+                                Log.e(TAG, "getConferenceAttendees: errorBody: \n" + string);
+                            } catch (IOException | NullPointerException e) {
+                                Log.e(TAG, "getConferenceAttendees: errorBody: \n" + e.getMessage());
+                            }
+
+                            mExecutors.mainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ConfAttendees conf = null;
+                                    completion.didReceiveResource(Resource.error("Failed to getConferenceAttendees",
+                                            conf));
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ConfAttendees> call, Throwable t) {
+                        Log.e(TAG, "getConferenceAttendees: onFailure: \n", t);
+                        ConfAttendees conf = null;
                         completion.didReceiveResource(Resource.error(t.getMessage(), conf));
                     }
                 });

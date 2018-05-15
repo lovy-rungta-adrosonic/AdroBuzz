@@ -55,5 +55,6 @@
     <string name="msg_conference_not_ended_sure_you_want_to_logout">Conference has not been ended yet. Are you sure you want to leave conference?</string>
     <string name="msg_are_you_sure_you_want_to_logout">Are you sure you want to logout</string>
     <string name="msg_do_you_want_to_send_email_before_logging_out">Do you want to send email before logging out</string>
+    <string name="msg_you_have_not_sent_mail_do_you_want_to_or_logout">You have not sent the email of conference summary. Do you want to send email or logout?</string>
 
 </resources>

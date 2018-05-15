@@ -5,8 +5,8 @@ import android.content.Context;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.StartConferenceContract;
 import com.adrosonic.adrobuzz.interactor.StartConferenceInteractor;
-import com.adrosonic.adrobuzz.model.CreateConfRequest;
-import com.adrosonic.adrobuzz.model.StartConf;
+import com.adrosonic.adrobuzz.model.CreateConf.CreateConfRequest;
+import com.adrosonic.adrobuzz.model.StartConf.StartConf;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 

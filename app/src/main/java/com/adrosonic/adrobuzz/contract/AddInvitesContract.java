@@ -2,7 +2,7 @@ package com.adrosonic.adrobuzz.contract;
 
 import android.support.annotation.NonNull;
 
-import com.adrosonic.adrobuzz.model.AddInvites;
+import com.adrosonic.adrobuzz.model.AddInvites.AddInvites;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
 import java.util.ArrayList;

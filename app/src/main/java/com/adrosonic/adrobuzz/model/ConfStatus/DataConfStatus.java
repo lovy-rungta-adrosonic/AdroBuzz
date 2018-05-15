@@ -1,10 +1,10 @@
-package com.adrosonic.adrobuzz.model;
+package com.adrosonic.adrobuzz.model.ConfStatus;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 /**
  * Awesome Pojo Generator
  * */
-public class JoinConfStatus{
+public class DataConfStatus {
   @SerializedName("name")
   @Expose
   private String name;

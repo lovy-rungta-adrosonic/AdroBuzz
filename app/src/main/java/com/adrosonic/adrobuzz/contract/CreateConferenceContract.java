@@ -2,8 +2,8 @@ package com.adrosonic.adrobuzz.contract;
 
 import android.support.annotation.NonNull;
 
-import com.adrosonic.adrobuzz.model.CreateConf;
-import com.adrosonic.adrobuzz.model.CreateConfRequest;
+import com.adrosonic.adrobuzz.model.CreateConf.CreateConf;
+import com.adrosonic.adrobuzz.model.CreateConf.CreateConfRequest;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
 /**

@@ -6,8 +6,7 @@ import android.util.Log;
 
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.StartConferenceContract;
-import com.adrosonic.adrobuzz.model.AddInvites;
-import com.adrosonic.adrobuzz.model.StartConf;
+import com.adrosonic.adrobuzz.model.StartConf.StartConf;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
 import com.adrosonic.adrobuzz.sync.network.Resource;
@@ -51,12 +50,6 @@ public class StartConferenceInteractor implements StartConferenceContract.UseCas
                             final StartConf body = response.body();
                             if (body != null && body.getStatus() == 0) {
                                 Log.v(TAG, "StartConference: success: \n" + body.getStatus());
-                                mExecutors.diskIO().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        PreferenceManager.getInstance(mContext).setIsConferenceStarted(true);
-                                    }
-                                });
                                 mExecutors.mainThread().execute(new Runnable() {
                                     @Override
                                     public void run() {
