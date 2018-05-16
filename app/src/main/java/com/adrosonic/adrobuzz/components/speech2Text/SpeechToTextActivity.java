@@ -1,4 +1,4 @@
-package com.adrosonic.adrobuzz.components.Speech2Text;
+package com.adrosonic.adrobuzz.components.speech2Text;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -365,6 +365,11 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         }
     }
 
+    @Override
+    public void leaveConfSuccess() {
+        clearPrefsAndExit();
+    }
+
     private void setUpView(boolean flag) {
         if (flag) {
             startRecording.setVisibility(View.VISIBLE);
@@ -463,15 +468,15 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                         startTimer();
                         startRecording();
                         dialog.dismiss();
-//                        mBinding.setEditSummary(true);
-//                        send.setVisibility(View.VISIBLE);
                     }
                 });
 
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.logout),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        clearPrefsAndExit();
+//                        clearPrefsAndExit();
+                        mBinding.setStatus(true);
+                        mPresenter.leaveConference();
                     }
                 });
         alertDialog.setCanceledOnTouchOutside(false);
@@ -496,7 +501,9 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        clearPrefsAndExit();
+//                        clearPrefsAndExit();
+                        mBinding.setStatus(true);
+                        mPresenter.leaveConference();
                     }
                 });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),

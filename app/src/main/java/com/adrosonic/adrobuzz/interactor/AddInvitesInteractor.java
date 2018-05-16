@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.AddInvitesContract;
-import com.adrosonic.adrobuzz.model.AddInvites.AddInvites;
+import com.adrosonic.adrobuzz.model.ServiceResponse;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
 import com.adrosonic.adrobuzz.sync.network.Resource;
@@ -43,11 +43,11 @@ public class AddInvitesInteractor implements AddInvitesContract.UseCase {
 
                 String confId = PreferenceManager.getInstance(mContext).getConfID();
 
-                mService.addInvites(confId, request).enqueue(new Callback<AddInvites>() {
+                mService.addInvites(confId, request).enqueue(new Callback<ServiceResponse>() {
                     @Override
-                    public void onResponse(Call<AddInvites> call, final Response<AddInvites> response) {
+                    public void onResponse(Call<ServiceResponse> call, final Response<ServiceResponse> response) {
                         if (response.isSuccessful()) {
-                            final AddInvites body = response.body();
+                            final ServiceResponse body = response.body();
                             if (body != null && body.getStatus() == 0) {
                                 Log.v(TAG, "addInvites: success: \n" + body.getStatus());
                                 mExecutors.diskIO().execute(new Runnable() {
@@ -66,7 +66,7 @@ public class AddInvitesInteractor implements AddInvitesContract.UseCase {
                                 mExecutors.mainThread().execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        AddInvites conf = null;
+                                        ServiceResponse conf = null;
                                         completion.didReceiveResource(Resource.error("Failed to addInvites",
                                                 conf));
                                     }
@@ -84,7 +84,7 @@ public class AddInvitesInteractor implements AddInvitesContract.UseCase {
                             mExecutors.mainThread().execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    AddInvites conf = null;
+                                    ServiceResponse conf = null;
                                     completion.didReceiveResource(Resource.error("Failed to addInvites",
                                             conf));
                                 }
@@ -93,9 +93,9 @@ public class AddInvitesInteractor implements AddInvitesContract.UseCase {
                     }
 
                     @Override
-                    public void onFailure(Call<AddInvites> call, Throwable t) {
+                    public void onFailure(Call<ServiceResponse> call, Throwable t) {
                         Log.e(TAG, "addInvites: onFailure: \n", t);
-                        AddInvites conf = null;
+                        ServiceResponse conf = null;
                         completion.didReceiveResource(Resource.error(t.getMessage(), conf));
                     }
                 });

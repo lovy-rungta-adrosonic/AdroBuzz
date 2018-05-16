@@ -1,12 +1,11 @@
-package com.adrosonic.adrobuzz.components.CreateConference;
+package com.adrosonic.adrobuzz.components.createConference;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.adrosonic.adrobuzz.contract.CreateConferenceContract;
 import com.adrosonic.adrobuzz.interactor.CreateConferenceInteractor;
-import com.adrosonic.adrobuzz.model.CreateConf.CreateConf;
 import com.adrosonic.adrobuzz.model.CreateConf.CreateConfRequest;
+import com.adrosonic.adrobuzz.model.ServiceResponse;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
@@ -30,10 +29,9 @@ public class CreateConferencePresenter implements CreateConferenceContract.Prese
     public void fetchConferenceID() {
 
         final CreateConfRequest request = view.getConferenceParameters();
-
         mInteractor.fetchConferenceID(request, new CreateConferenceContract.UseCase.Completion() {
             @Override
-            public void didReceiveResource(Resource<CreateConf> resource) {
+            public void didReceiveResource(Resource<ServiceResponse> resource) {
                 view.setLoadingIndicator(false);
                 switch (resource.status) {
                     case LOADING:
@@ -43,8 +41,7 @@ public class CreateConferencePresenter implements CreateConferenceContract.Prese
                         view.showLoadingError(resource.message);
                         break;
                     case SUCCESS:
-                        Log.v(TAG,"Success");
-                        view.showConfID(resource.data);
+                        view.showConfID();
                         break;
                     default:
                         break;

@@ -1,12 +1,11 @@
-package com.adrosonic.adrobuzz.components.CreateConference;
+package com.adrosonic.adrobuzz.components.createConference;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.contract.AddInvitesContract;
 import com.adrosonic.adrobuzz.interactor.AddInvitesInteractor;
-import com.adrosonic.adrobuzz.model.AddInvites.AddInvites;
+import com.adrosonic.adrobuzz.model.ServiceResponse;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
@@ -36,7 +35,7 @@ public class AddInvitesPresenter implements AddInvitesContract.Presenter {
         if(request.size()>0){
             mInteractor.addInvites(request, new AddInvitesContract.UseCase.Completion() {
                 @Override
-                public void didReceiveResource(Resource<AddInvites> resource) {
+                public void didReceiveResource(Resource<ServiceResponse> resource) {
                     view.setLoadingIndicator(false);
                     switch (resource.status) {
                         case LOADING:
@@ -46,9 +45,7 @@ public class AddInvitesPresenter implements AddInvitesContract.Presenter {
                             view.showLoadingError(resource.message);
                             break;
                         case SUCCESS:
-                            Log.v(TAG,"Success");
                             view.finishActivity();
-//                        view.showConfID(resource.data);
                             break;
                         default:
                             break;

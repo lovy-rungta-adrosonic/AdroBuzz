@@ -1,4 +1,4 @@
-package com.adrosonic.adrobuzz.components.CreateConference;
+package com.adrosonic.adrobuzz.components.createConference;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -21,14 +21,14 @@ public class EmailListAdapter extends
     private List<String> emailList;
     private Context context;
 
-    public EmailListAdapter(List<String> flsLst, Context ctx){
+    public EmailListAdapter(List<String> flsLst, Context ctx) {
         emailList = flsLst;
         context = ctx;
     }
 
     @Override
     public EmailListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                    int viewType) {
+                                                          int viewType) {
         CellEmailBinding binding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.getContext()),
                 R.layout.cell_email, parent, false);
@@ -48,7 +48,7 @@ public class EmailListAdapter extends
         return emailList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public CellEmailBinding cellEmailBinding;
 
         public ViewHolder(CellEmailBinding cellEmailLayoutBinding) {
@@ -56,4 +56,4 @@ public class EmailListAdapter extends
             cellEmailBinding = cellEmailLayoutBinding;
         }
     }
-  }
+}

@@ -6,8 +6,8 @@ import android.util.Log;
 
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.CreateConferenceContract;
-import com.adrosonic.adrobuzz.model.CreateConf.CreateConf;
 import com.adrosonic.adrobuzz.model.CreateConf.CreateConfRequest;
+import com.adrosonic.adrobuzz.model.ServiceResponse;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
 import com.adrosonic.adrobuzz.sync.network.Resource;
@@ -44,11 +44,11 @@ public class CreateConferenceInteractor implements CreateConferenceContract.UseC
             @Override
             public void run() {
 
-                mService.getConferenceID(request).enqueue(new Callback<CreateConf>() {
+                mService.getConferenceID(request).enqueue(new Callback<ServiceResponse>() {
                     @Override
-                    public void onResponse(Call<CreateConf> call, final Response<CreateConf> response) {
+                    public void onResponse(Call<ServiceResponse> call, final Response<ServiceResponse> response) {
                         if (response.isSuccessful()) {
-                            final CreateConf body = response.body();
+                            final ServiceResponse body = response.body();
                             Log.v(TAG, "fetchConferenceID: success: \n"+ body.getData());
                             mExecutors.diskIO().execute(new Runnable() {
                                 @Override
@@ -76,7 +76,7 @@ public class CreateConferenceInteractor implements CreateConferenceContract.UseC
                             mExecutors.mainThread().execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    CreateConf conf = null;
+                                    ServiceResponse conf = null;
                                     completion.didReceiveResource(Resource.error("Failed to fetchConferenceID",
                                             conf));
                                 }
@@ -85,9 +85,9 @@ public class CreateConferenceInteractor implements CreateConferenceContract.UseC
                     }
 
                     @Override
-                    public void onFailure(Call<CreateConf> call, Throwable t) {
+                    public void onFailure(Call<ServiceResponse> call, Throwable t) {
                         Log.e(TAG, "fetchConferenceID: onFailure: \n", t);
-                        CreateConf conf = null;
+                        ServiceResponse conf = null;
                         completion.didReceiveResource(Resource.error(t.getMessage(), conf));
                     }
                 });

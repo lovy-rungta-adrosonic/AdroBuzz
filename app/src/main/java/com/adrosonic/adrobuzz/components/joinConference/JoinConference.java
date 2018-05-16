@@ -1,4 +1,4 @@
-package com.adrosonic.adrobuzz.components.JoinConference;
+package com.adrosonic.adrobuzz.components.joinConference;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.Utils.Utility;
-import com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextActivity;
+import com.adrosonic.adrobuzz.components.speech2Text.SpeechToTextActivity;
 import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.contract.JoinConferenceContract;
 import com.adrosonic.adrobuzz.databinding.ActivityJoinConferenceBinding;
@@ -30,8 +30,6 @@ import butterknife.Unbinder;
 import retrofit2.Retrofit;
 
 public class JoinConference extends AppCompatActivity implements Validator.ValidationListener, JoinConferenceContract.View {
-
-    JoinConfRequest request;
 
     @Inject
     Retrofit retrofit;
@@ -51,27 +49,24 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
     Unbinder unbinder;
     private ActivityJoinConferenceBinding mBinding;
     private Validator validator;
-
     private JoinConferenceContract.Presenter mPresenter;
+    JoinConfRequest request;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_join_conference);
-
         final View view = mBinding.getRoot();
         unbinder = ButterKnife.bind(this, view);
+
         validator = new Validator(mBinding);
         validator.setValidationListener(this);
 
         ((App) getApplication()).getAppComponent().inject(this);
-
         Service service = retrofit.create(Service.class);
         mPresenter = new JoinConferencePresenter(this, this, service);
-
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mBinding.setJoinConf(false);
-
     }
 
     @OnClick(R.id.join_conference)
@@ -83,23 +78,21 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
 
             default:
                 break;
-
         }
     }
 
     @Override
     public void onValidationSuccess() {
-        if(Utility.checkIfInternetConnected(this)){
+        if (Utility.checkIfInternetConnected(this)) {
             mBinding.setJoinConf(true);
             mPresenter.joinConference();
-        }else{
+        } else {
             Utility.noInternetConnection(this);
         }
     }
 
     @Override
     public void onValidationError() {
-
     }
 
     @Override
@@ -124,7 +117,7 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
     @Override
     public String getConfId() {
         EditText confId = findViewById(R.id.conf_id);
-        return "AB-"+confId.getText().toString();
+        return "AB-" + confId.getText().toString();
     }
 
     @Override
@@ -138,5 +131,4 @@ public class JoinConference extends AppCompatActivity implements Validator.Valid
         speechToText.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(speechToText);
     }
-
 }

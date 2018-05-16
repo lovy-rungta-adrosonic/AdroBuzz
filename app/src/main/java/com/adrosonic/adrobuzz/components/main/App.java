@@ -29,7 +29,7 @@ import static com.adrosonic.adrobuzz.sync.network.Environment.DEV;
 
 public class App extends Application {
 
-        private AppComponent appComponent;
+    private AppComponent appComponent;
 
     @Inject
     Retrofit retrofit;
@@ -54,9 +54,9 @@ public class App extends Application {
 
         String confId = PreferenceManager.getInstance(getApplicationContext()).getConfID();
 
-        if(!confId.isEmpty()){
-            SpeechToTextInteractor mInteractor = new SpeechToTextInteractor(getApplicationContext(),service);
-            mInteractor .getConferenceStatus(new SpeechToTextContract.UseCase.Completion() {
+        if (!confId.isEmpty()) {
+            SpeechToTextInteractor mInteractor = new SpeechToTextInteractor(getApplicationContext(), service);
+            mInteractor.getConferenceStatus(new SpeechToTextContract.UseCase.Completion() {
                 @Override
                 public void didReceiveResource(Resource<ConferenceStatus> resource) {
 
@@ -67,18 +67,18 @@ public class App extends Application {
                             break;
                         case SUCCESS:
                             DataConfStatus dataConfStatus = resource.data.getDataConfStatus();
-                            if(dataConfStatus !=null){
+                            if (dataConfStatus != null) {
                                 switch (dataConfStatus.getId()) {
                                     case 1:
-                                        Log.e("APP","status is 1");
+                                        Log.e("APP", "status is 1");
                                         PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(1);
                                         break;
                                     case 2:
-                                        Log.e("APP","status is 2");
+                                        Log.e("APP", "status is 2");
                                         PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(2);
                                         break;
                                     case 3:
-                                        Log.e("APP","status is 3");
+                                        Log.e("APP", "status is 3");
                                         PreferenceManager.getInstance(getApplicationContext()).setConferenceStatus(3);
                                         break;
                                     default:

@@ -12,8 +12,8 @@ import android.widget.EditText;
 
 public class PrefixEditText extends android.support.v7.widget.AppCompatEditText {
 
-    private String mPrefix = "AB-"; // add your prefix here for example $
-    private Rect mPrefixRect = new Rect(); // actual prefix size
+    private String mPrefix = "AB-";
+    private Rect mPrefixRect = new Rect();
 
     public PrefixEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -22,7 +22,7 @@ public class PrefixEditText extends android.support.v7.widget.AppCompatEditText 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         getPaint().getTextBounds(mPrefix, 0, mPrefix.length(), mPrefixRect);
-        mPrefixRect.right += getPaint().measureText(" "); // add some offset
+        mPrefixRect.right += getPaint().measureText(" ");
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }

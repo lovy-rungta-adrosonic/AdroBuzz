@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.adrosonic.adrobuzz.components.CreateConference.AddInvitesActivity">
+    tools:context="com.adrosonic.adrobuzz.components.createConference.AddInvitesActivity">
 
     <data>
 
@@ -108,7 +108,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/button_background"
+            android:background="@drawable/button_background_blue"
             android:text="@string/send_invites"
             android:textAllCaps="false"
             android:textColor="@color/white"/>

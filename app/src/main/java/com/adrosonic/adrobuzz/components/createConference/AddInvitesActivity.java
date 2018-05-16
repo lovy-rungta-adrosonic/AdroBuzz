@@ -1,4 +1,4 @@
-package com.adrosonic.adrobuzz.components.CreateConference;
+package com.adrosonic.adrobuzz.components.createConference;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
@@ -121,7 +120,6 @@ public class AddInvitesActivity extends AppCompatActivity implements AddInvitesC
                 } else {
                     Log.e(TAG, "Validation failed");
                 }
-
                 break;
 
             case R.id.send_invites:

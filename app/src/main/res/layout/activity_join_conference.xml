@@ -16,7 +16,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.adrosonic.adrobuzz.components.JoinConference.JoinConference">
+        tools:context="com.adrosonic.adrobuzz.components.joinConference.JoinConference">
 
         <LinearLayout
             android:id="@+id/header"
@@ -138,7 +138,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginTop="40dp"
-                    android:background="@drawable/button_background"
+                    android:background="@drawable/button_background_blue"
                     android:text="@string/join_conference"
                     android:textAllCaps="false"
                     android:textColor="@color/white" />

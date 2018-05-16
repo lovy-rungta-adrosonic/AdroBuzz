@@ -1,4 +1,4 @@
-package com.adrosonic.adrobuzz.components.CreateConference;
+package com.adrosonic.adrobuzz.components.createConference;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -18,7 +17,7 @@ import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.Utils.Utility;
 import com.adrosonic.adrobuzz.components.main.App;
-import com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextActivity;
+import com.adrosonic.adrobuzz.components.speech2Text.SpeechToTextActivity;
 import com.adrosonic.adrobuzz.contract.StartConferenceContract;
 import com.adrosonic.adrobuzz.databinding.ActivityStartConferenceBinding;
 import com.adrosonic.adrobuzz.sync.api.Service;
@@ -35,9 +34,6 @@ import retrofit2.Retrofit;
 
 public class StartConferenceActivity extends AppCompatActivity implements StartConferenceContract.View {
 
-    Unbinder unbinder;
-    private ActivityStartConferenceBinding mBinding;
-
     @Inject
     Retrofit retrofit;
 
@@ -52,11 +48,15 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
     @BindView(R.id.add_invites)
     ImageView add_invites;
 
+    Unbinder unbinder;
+    private ActivityStartConferenceBinding mBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_start_conference);
         final View view = mBinding.getRoot();
+        unbinder = ButterKnife.bind(this, view);
 
         ((App) getApplication()).getAppComponent().inject(this);
         Service service = retrofit.create(Service.class);
@@ -65,26 +65,20 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
         mBinding.setStatus(false);
         mBinding.setStatusLoading(false);
         mBinding.setPresenter((StartConferencePresenter) mPresenter);
-        unbinder = ButterKnife.bind(this, view);
 
         Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse);
         add_invites.startAnimation(pulse);
-
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mLayout = view.findViewById(R.id.emptyLayout);
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         listOfEmail = PreferenceManager.getInstance(this).getListOfInvitees();
         adapter = new EmailListAdapter(listOfEmail, this);
-
         setUpListVisibility();
     }
 
@@ -107,7 +101,6 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
 
             default:
                 break;
-
         }
     }
 
@@ -118,7 +111,6 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
 
     @Override
     public void showLoadingError(String message) {
-
     }
 
     @Override
@@ -137,8 +129,6 @@ public class StartConferenceActivity extends AppCompatActivity implements StartC
                 mRecyclerView.setVisibility(View.VISIBLE);
                 mRecyclerView.setAdapter(adapter);
                 mBinding.setStatus(true);
-
-
             } else {
                 mLayout.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.INVISIBLE);

@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.StartConferenceContract;
-import com.adrosonic.adrobuzz.model.StartConf.StartConf;
+import com.adrosonic.adrobuzz.model.ServiceResponse;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
 import com.adrosonic.adrobuzz.sync.network.Resource;
@@ -43,11 +43,11 @@ public class StartConferenceInteractor implements StartConferenceContract.UseCas
 
                 String confId = PreferenceManager.getInstance(mContext).getConfID();
 
-                mService.startConference(confId).enqueue(new Callback<StartConf>() {
+                mService.startConference(confId).enqueue(new Callback<ServiceResponse>() {
                     @Override
-                    public void onResponse(Call<StartConf> call, final Response<StartConf> response) {
+                    public void onResponse(Call<ServiceResponse> call, final Response<ServiceResponse> response) {
                         if (response.isSuccessful()) {
-                            final StartConf body = response.body();
+                            final ServiceResponse body = response.body();
                             if (body != null && body.getStatus() == 0) {
                                 Log.v(TAG, "StartConference: success: \n" + body.getStatus());
                                 mExecutors.mainThread().execute(new Runnable() {
@@ -61,7 +61,7 @@ public class StartConferenceInteractor implements StartConferenceContract.UseCas
                                 mExecutors.mainThread().execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        StartConf conf = null;
+                                        ServiceResponse conf = null;
                                         completion.didReceiveResource(Resource.error("Failed to StartConference",
                                                 conf));
                                     }
@@ -80,7 +80,7 @@ public class StartConferenceInteractor implements StartConferenceContract.UseCas
                             mExecutors.mainThread().execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    StartConf conf = null;
+                                    ServiceResponse conf = null;
                                     completion.didReceiveResource(Resource.error("Failed to StartConference",
                                             conf));
                                 }
@@ -89,9 +89,9 @@ public class StartConferenceInteractor implements StartConferenceContract.UseCas
                     }
 
                     @Override
-                    public void onFailure(Call<StartConf> call, Throwable t) {
+                    public void onFailure(Call<ServiceResponse> call, Throwable t) {
                         Log.e(TAG, "StartConference: onFailure: \n", t);
-                        StartConf conf = null;
+                        ServiceResponse conf = null;
                         completion.didReceiveResource(Resource.error(t.getMessage(), conf));
                     }
                 });

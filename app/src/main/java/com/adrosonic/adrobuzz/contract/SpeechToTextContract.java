@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.adrosonic.adrobuzz.model.ConfAttendees.ConfAttendees;
 import com.adrosonic.adrobuzz.model.ConfStatus.ConferenceStatus;
+import com.adrosonic.adrobuzz.model.ServiceResponse;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
 /**
@@ -19,6 +20,7 @@ public interface SpeechToTextContract {
         void finalConfStatus(int status);
         void confStatus(int status);
         void showAttendeeList();
+        void leaveConfSuccess();
     }
 
     interface  Presenter{
@@ -27,19 +29,29 @@ public interface SpeechToTextContract {
         void getConferenceStatus();
         void getConferenceStatusLogOut();
         void getConferenceAttendees();
+        void leaveConference();
     }
 
     interface UseCase{
-        void endConference(@NonNull Completion completion);
+        void endConference(@NonNull EndConfCompletion completion);
         void getConferenceStatus(@NonNull Completion completion);
         void getConferenceAttendees(@NonNull ConfAttendeesCompletion completion);
+        void leaveConference(@NonNull LeaveConfCompletion completion);
 
         interface Completion {
             void didReceiveResource(Resource<ConferenceStatus> resource);
         }
 
+        interface EndConfCompletion {
+            void didReceiveResource(Resource<ServiceResponse> resource);
+        }
+
         interface ConfAttendeesCompletion {
             void didReceiveResource(Resource<ConfAttendees> resource);
+        }
+
+        interface LeaveConfCompletion {
+            void didReceiveResource(Resource<ServiceResponse> resource);
         }
 
     }

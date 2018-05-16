@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".components.main.App"
@@ -17,33 +17,33 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name=".components.main.MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".components.CreateConference.CreateConference"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".components.JoinConference.JoinConference"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".components.CreateConference.StartConferenceActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".components.CreateConference.AddInvitesActivity" />
-        <activity android:name=".components.main.SplashScreenActivity">
+            android:name=".components.main.SplashScreenActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".components.Speech2Text.SpeechToTextActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
+        <activity
+            android:name=".components.main.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".components.createConference.CreateConference"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".components.joinConference.JoinConference"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".components.createConference.StartConferenceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".components.createConference.AddInvitesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".components.speech2Text.SpeechToTextActivity"
+            android:screenOrientation="portrait" />
 
     </application>
-
 </manifest>

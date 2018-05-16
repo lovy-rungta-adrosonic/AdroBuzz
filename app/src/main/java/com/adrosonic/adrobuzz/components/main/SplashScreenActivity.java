@@ -7,8 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.adrosonic.adrobuzz.R;
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
-import com.adrosonic.adrobuzz.components.CreateConference.StartConferenceActivity;
-import com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextActivity;
+import com.adrosonic.adrobuzz.components.createConference.StartConferenceActivity;
+import com.adrosonic.adrobuzz.components.speech2Text.SpeechToTextActivity;
 
 import javax.inject.Inject;
 
@@ -23,7 +23,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-
         int SPLASH_TIME_OUT = 2000;
         new Handler().postDelayed(new Runnable() {
             @Override

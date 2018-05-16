@@ -25,20 +25,15 @@ import java.util.Date;
 public abstract class BasePermissionActivity extends AppCompatActivity implements OnPermissionCallback {
 
     private static final String TAG = BasePermissionActivity.class.getSimpleName();
-
     private PermissionHelper permissionHelper;
-
     private AlertDialog builder;
     private String[] neededPermission;
-
-//    private final static String SINGLE_PERMISSION = Manifest.permission.RECORD_AUDIO;
 
     private final static String[] MULTI_PERMISSIONS = new String[]{
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

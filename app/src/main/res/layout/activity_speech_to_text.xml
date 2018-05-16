@@ -9,7 +9,7 @@
 
         <variable
             name="presenter"
-            type="com.adrosonic.adrobuzz.components.Speech2Text.SpeechToTextPresenter" />
+            type="com.adrosonic.adrobuzz.components.speech2Text.SpeechToTextPresenter" />
 
         <variable
             name="editSummary"
@@ -198,7 +198,7 @@
             android:clickable="true"
             android:layout_margin="8dp"
             android:padding="8dp"
-            app:srcCompat="@drawable/edit_pencil" />
+            app:srcCompat="@drawable/ic_edit_pencil" />
 
         <FrameLayout
             android:id="@+id/progressLayout"

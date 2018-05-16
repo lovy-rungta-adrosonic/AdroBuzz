@@ -1,4 +1,4 @@
-package com.adrosonic.adrobuzz.components.Speech2Text;
+package com.adrosonic.adrobuzz.components.speech2Text;
 
 import android.content.Context;
 
@@ -8,6 +8,7 @@ import com.adrosonic.adrobuzz.interactor.SpeechToTextInteractor;
 import com.adrosonic.adrobuzz.model.ConfAttendees.ConfAttendees;
 import com.adrosonic.adrobuzz.model.ConfStatus.ConferenceStatus;
 import com.adrosonic.adrobuzz.model.ConfStatus.DataConfStatus;
+import com.adrosonic.adrobuzz.model.ServiceResponse;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
@@ -41,9 +42,9 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter {
 
     @Override
     public void endConference() {
-        mInteractor.endConference(new SpeechToTextContract.UseCase.Completion() {
+        mInteractor.endConference(new SpeechToTextContract.UseCase.EndConfCompletion() {
             @Override
-            public void didReceiveResource(Resource<ConferenceStatus> resource) {
+            public void didReceiveResource(Resource<ServiceResponse> resource) {
                 view.setLoadingIndicator(false);
                 switch (resource.status) {
                     case LOADING:
@@ -162,6 +163,28 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter {
                         break;
                     case SUCCESS:
                         view.showAttendeeList();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void leaveConference() {
+        mInteractor.leaveConference(new SpeechToTextContract.UseCase.LeaveConfCompletion() {
+            @Override
+            public void didReceiveResource(Resource<ServiceResponse> resource) {
+                view.setLoadingIndicator(false);
+                switch (resource.status) {
+                    case LOADING:
+                        break;
+                    case ERROR:
+                        view.showError(resource.message);
+                        break;
+                    case SUCCESS:
+                        view.leaveConfSuccess();
                         break;
                     default:
                         break;

@@ -2,7 +2,7 @@ package com.adrosonic.adrobuzz.contract;
 
 import android.support.annotation.NonNull;
 
-import com.adrosonic.adrobuzz.model.StartConf.StartConf;
+import com.adrosonic.adrobuzz.model.ServiceResponse;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
 /**
@@ -15,7 +15,6 @@ public interface StartConferenceContract {
         void setLoadingIndicator(boolean active);
         void showLoadingError(String message);
         void conferenceStarted();
-
     }
 
     interface  Presenter{
@@ -31,7 +30,7 @@ public interface StartConferenceContract {
         void startConference(@NonNull Completion completion);
 
         interface Completion {
-            void didReceiveResource(Resource<StartConf> resource);
+            void didReceiveResource(Resource<ServiceResponse> resource);
         }
     }
 }

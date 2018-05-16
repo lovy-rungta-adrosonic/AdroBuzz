@@ -9,6 +9,7 @@ import com.adrosonic.adrobuzz.contract.SpeechToTextContract;
 import com.adrosonic.adrobuzz.model.ConfAttendees.AttendeesData;
 import com.adrosonic.adrobuzz.model.ConfAttendees.ConfAttendees;
 import com.adrosonic.adrobuzz.model.ConfStatus.ConferenceStatus;
+import com.adrosonic.adrobuzz.model.ServiceResponse;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
 import com.adrosonic.adrobuzz.sync.network.Resource;
@@ -40,7 +41,7 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
     }
 
     @Override
-    public void endConference(final @NonNull Completion completion) {
+    public void endConference(final @NonNull EndConfCompletion completion) {
 
         mExecutors.networkIO().execute(new Runnable() {
             @Override
@@ -48,11 +49,11 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
 
                 String confId = PreferenceManager.getInstance(mContext).getConfID();
 
-                mService.endConference(confId).enqueue(new Callback<ConferenceStatus>() {
+                mService.endConference(confId).enqueue(new Callback<ServiceResponse>() {
                     @Override
-                    public void onResponse(Call<ConferenceStatus> call, final Response<ConferenceStatus> response) {
+                    public void onResponse(Call<ServiceResponse> call, final Response<ServiceResponse> response) {
                         if (response.isSuccessful()) {
-                            final ConferenceStatus body = response.body();
+                            final ServiceResponse body = response.body();
                             if (body != null && body.getStatus() == 0) {
                                 Log.v(TAG, "endConference: success: \n" + body.getStatus());
                                 mExecutors.diskIO().execute(new Runnable() {
@@ -72,7 +73,7 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
                                 mExecutors.mainThread().execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        ConferenceStatus conf = null;
+                                        ServiceResponse conf = null;
                                         completion.didReceiveResource(Resource.error("Failed to endConference",
                                                 conf));
                                     }
@@ -91,7 +92,7 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
                             mExecutors.mainThread().execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ConferenceStatus conf = null;
+                                    ServiceResponse conf = null;
                                     completion.didReceiveResource(Resource.error("Failed to end conference",
                                             conf));
                                 }
@@ -100,9 +101,9 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
                     }
 
                     @Override
-                    public void onFailure(Call<ConferenceStatus> call, Throwable t) {
+                    public void onFailure(Call<ServiceResponse> call, Throwable t) {
                         Log.e(TAG, "endConference: onFailure: \n", t);
-                        ConferenceStatus conf = null;
+                        ServiceResponse conf = null;
                         completion.didReceiveResource(Resource.error(t.getMessage(), conf));
                     }
                 });
@@ -257,6 +258,72 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
                     public void onFailure(Call<ConfAttendees> call, Throwable t) {
                         Log.e(TAG, "getConferenceAttendees: onFailure: \n", t);
                         ConfAttendees conf = null;
+                        completion.didReceiveResource(Resource.error(t.getMessage(), conf));
+                    }
+                });
+            }
+        });
+
+    }
+
+    @Override
+    public void leaveConference(final @NonNull LeaveConfCompletion completion) {
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                String confId = PreferenceManager.getInstance(mContext).getConfID();
+                String email = PreferenceManager.getInstance(mContext).getJoineeUsername();
+
+                mService.leaveConference(confId,email).enqueue(new Callback<ServiceResponse>() {
+                    @Override
+                    public void onResponse(Call<ServiceResponse> call, final Response<ServiceResponse> response) {
+                        if (response.isSuccessful()) {
+                            final ServiceResponse body = response.body();
+                            if (body != null && body.getStatus() == 0) {
+                                Log.v(TAG, "leaveConference: success: \n" + body.getStatus());
+
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        completion.didReceiveResource(Resource.success(body));
+                                    }
+                                });
+                            } else {
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ServiceResponse conf = null;
+                                        completion.didReceiveResource(Resource.error("Failed to leaveConference",
+                                                conf));
+                                    }
+                                });
+                            }
+
+                        } else {
+                            try {
+                                final String string = response.errorBody()
+                                        .string();
+                                Log.e(TAG, "leaveConference: errorBody: \n" + string);
+                            } catch (IOException | NullPointerException e) {
+                                Log.e(TAG, "leaveConference: errorBody: \n" + e.getMessage());
+                            }
+
+                            mExecutors.mainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ServiceResponse conf = null;
+                                    completion.didReceiveResource(Resource.error("Failed to leaveConference",
+                                            conf));
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ServiceResponse> call, Throwable t) {
+                        Log.e(TAG, "leaveConference: onFailure: \n", t);
+                        ServiceResponse conf = null;
                         completion.didReceiveResource(Resource.error(t.getMessage(), conf));
                     }
                 });

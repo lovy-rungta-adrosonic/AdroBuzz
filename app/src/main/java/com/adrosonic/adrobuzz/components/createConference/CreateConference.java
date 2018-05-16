@@ -1,4 +1,4 @@
-package com.adrosonic.adrobuzz.components.CreateConference;
+package com.adrosonic.adrobuzz.components.createConference;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -20,7 +20,6 @@ import com.adrosonic.adrobuzz.Utils.Utility;
 import com.adrosonic.adrobuzz.components.main.App;
 import com.adrosonic.adrobuzz.contract.CreateConferenceContract;
 import com.adrosonic.adrobuzz.databinding.ActivityCreateConferenceBinding;
-import com.adrosonic.adrobuzz.model.CreateConf.CreateConf;
 import com.adrosonic.adrobuzz.model.CreateConf.CreateConfRequest;
 import com.adrosonic.adrobuzz.model.CreateConf.CreateConfUser;
 import com.adrosonic.adrobuzz.sync.api.Service;
@@ -173,7 +172,7 @@ public class CreateConference extends AppCompatActivity implements CreateConfere
     }
 
     @Override
-    public void showConfID(CreateConf confID) {
+    public void showConfID() {
         Intent start = new Intent(getBaseContext(), StartConferenceActivity.class);
         start.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(start);

@@ -1,15 +1,13 @@
 package com.adrosonic.adrobuzz.components.main;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.adrosonic.adrobuzz.R;
-import com.adrosonic.adrobuzz.components.CreateConference.CreateConference;
-import com.adrosonic.adrobuzz.components.JoinConference.JoinConference;
+import com.adrosonic.adrobuzz.components.createConference.CreateConference;
+import com.adrosonic.adrobuzz.components.joinConference.JoinConference;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -23,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
-
     }
 
     @OnClick({R.id.create_conference,R.id.join_conference})

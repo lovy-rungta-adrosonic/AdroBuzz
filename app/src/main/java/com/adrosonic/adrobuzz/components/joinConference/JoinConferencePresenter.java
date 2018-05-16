@@ -1,4 +1,4 @@
-package com.adrosonic.adrobuzz.components.JoinConference;
+package com.adrosonic.adrobuzz.components.joinConference;
 
 import android.content.Context;
 

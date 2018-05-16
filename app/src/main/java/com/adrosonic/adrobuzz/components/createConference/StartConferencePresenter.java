@@ -1,4 +1,4 @@
-package com.adrosonic.adrobuzz.components.CreateConference;
+package com.adrosonic.adrobuzz.components.createConference;
 
 import android.content.Context;
 
@@ -6,7 +6,7 @@ import com.adrosonic.adrobuzz.Utils.PreferenceManager;
 import com.adrosonic.adrobuzz.contract.StartConferenceContract;
 import com.adrosonic.adrobuzz.interactor.StartConferenceInteractor;
 import com.adrosonic.adrobuzz.model.CreateConf.CreateConfRequest;
-import com.adrosonic.adrobuzz.model.StartConf.StartConf;
+import com.adrosonic.adrobuzz.model.ServiceResponse;
 import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
@@ -88,7 +88,7 @@ public class StartConferencePresenter implements StartConferenceContract.Present
     public void startConference() {
         mInteractor.startConference(new StartConferenceContract.UseCase.Completion() {
             @Override
-            public void didReceiveResource(Resource< StartConf> resource) {
+            public void didReceiveResource(Resource<ServiceResponse> resource) {
                 view.setLoadingIndicator(false);
                 switch (resource.status) {
                     case LOADING:
@@ -98,7 +98,6 @@ public class StartConferencePresenter implements StartConferenceContract.Present
                         view.showLoadingError(resource.message);
                         break;
                     case SUCCESS:
-//                        Log.v(TAG,"Success");
                         view.conferenceStarted();
                         break;
                     default:

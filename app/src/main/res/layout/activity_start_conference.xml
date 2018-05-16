@@ -17,7 +17,7 @@
 
         <variable
             name="presenter"
-            type="com.adrosonic.adrobuzz.components.CreateConference.StartConferencePresenter" />
+            type="com.adrosonic.adrobuzz.components.createConference.StartConferencePresenter" />
 
     </data>
 
@@ -119,7 +119,7 @@
                 android:layout_height="110dp"
                 android:layout_gravity="bottom"
                 android:layout_marginRight="8dp"
-                app:srcCompat="@drawable/ic_mic_asset_back_creators" />
+                app:srcCompat="@drawable/ic_mic_back_creators" />
 
         </LinearLayout>
 
@@ -156,7 +156,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_margin="16dp"
-            android:background="@drawable/button_background"
+            android:background="@drawable/button_background_blue"
             android:padding="8dp"
             android:text="@string/start_conference"
             android:textAllCaps="false"
