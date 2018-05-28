@@ -157,7 +157,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/inputLayoutInviteeEmail"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="40dp"
                     android:orientation="horizontal">
 
                     <TextView

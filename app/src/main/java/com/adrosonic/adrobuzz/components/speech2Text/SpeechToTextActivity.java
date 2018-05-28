@@ -110,7 +110,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         mBinding.setEditSummary(false);
         mBinding.setStatus(false);
 
-        if(!Utility.checkIfInternetConnected(this)){
+        if (!Utility.checkIfInternetConnected(this)) {
             Utility.noInternetConnection(this);
         }
 
@@ -195,7 +195,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                 break;
 
             case R.id.endConf:
-                if(Utility.checkIfInternetConnected(this)){
+                if (Utility.checkIfInternetConnected(this)) {
                     IConvertor iConvertor = TranslatorFactory.getInstance().iConvertor;
                     if (iConvertor != null) {
                         iConvertor.stopListening();
@@ -203,7 +203,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                     audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
                     mBinding.setStatus(true);
                     mPresenter.endConference();
-                }else{
+                } else {
                     Utility.noInternetConnection(this);
                 }
                 break;
@@ -355,19 +355,26 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         stopTimer();
     }
 
-    @Override
-    public void showAttendeeList() {
-        ArrayList<String> emails = PreferenceManager.getInstance(this).getConferenceAttendeesList();
-        if (emails != null) {
-            String[] toList = new String[emails.size()];
-            toList = emails.toArray(toList);
-            sendEmail(toList);
-        }
-    }
+//    @Override
+//    public void showAttendeeList() {
+//        ArrayList<String> emails = PreferenceManager.getInstance(this).getConferenceAttendeesList();
+//        if (emails != null) {
+//            String[] toList = new String[emails.size()];
+//            toList = emails.toArray(toList);
+//            sendEmail(toList);
+//        }else{
+//            Toast.makeText(this,"No one has joined the conference yet.",Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     @Override
     public void leaveConfSuccess() {
         clearPrefsAndExit();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        showAlert(message);
     }
 
     private void setUpView(boolean flag) {
@@ -475,8 +482,12 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 //                        clearPrefsAndExit();
-                        mBinding.setStatus(true);
-                        mPresenter.leaveConference();
+                        if (Utility.checkIfInternetConnected(SpeechToTextActivity.this)) {
+                            mBinding.setStatus(true);
+                            mPresenter.leaveConference();
+                        } else {
+                            Utility.noInternetConnection(SpeechToTextActivity.this);
+                        }
                     }
                 });
         alertDialog.setCanceledOnTouchOutside(false);
@@ -501,9 +512,17 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-//                        clearPrefsAndExit();
-                        mBinding.setStatus(true);
-                        mPresenter.leaveConference();
+
+                        if (isAdmin) {
+                            clearPrefsAndExit();
+                        } else {
+                            if (Utility.checkIfInternetConnected(SpeechToTextActivity.this)) {
+                                mBinding.setStatus(true);
+                                mPresenter.leaveConference();
+                            } else {
+                                Utility.noInternetConnection(SpeechToTextActivity.this);
+                            }
+                        }
                     }
                 });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
@@ -616,7 +635,7 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
 
     public void send() {
 
-        if(Utility.checkIfInternetConnected(this)){
+        if (Utility.checkIfInternetConnected(this)) {
             File file = new File(Utility.filePath());
             if (file.exists()) {
                 file.delete();
@@ -631,105 +650,110 @@ public class SpeechToTextActivity extends BasePermissionActivity implements Conv
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            PreferenceManager.getInstance(this).setEmailSent(true);
-            if (isAdmin) {
-                mBinding.setStatus(true);
-                mPresenter.getConferenceAttendees();
-            } else {
-                String uerName = PreferenceManager.getInstance(this).getJoineeUsername();
-                String toList[] = {uerName};
-                sendEmail(toList);
+            mBinding.setStatus(true);
+            if(isAdmin){
+                mPresenter.sendMailAdmin();
+            }else{
+                //TODO send mail joinee
+                mPresenter.sendMailNonAdmin();
             }
-        }else {
+//            if (isAdmin) {
+//                mBinding.setStatus(true);
+//                mPresenter.getConferenceAttendees();
+//            } else {
+//                String uerName = PreferenceManager.getInstance(this).getJoineeUsername();
+//                String toList[] = {uerName};
+//                sendEmail(toList);
+//            }
+        } else {
             Utility.noInternetConnection(this);
         }
     }
+//
+//    public void sendEmail(final String toList[]) {
+//        try {
+//            PackageManager pm = this.getPackageManager();
+//            ResolveInfo selectedEmailActivity = null;
+//
+//            Intent emailDummyIntent = new Intent(Intent.ACTION_SENDTO);
+//            emailDummyIntent.setData(Uri.parse("mailto:test@gmail.com"));
+//            List<ResolveInfo> emailActivities = pm.queryIntentActivities(emailDummyIntent, 0);
+//            if (null == emailActivities || emailActivities.size() == 0) {
+//                Intent emailDummyIntentRFC822 = new Intent(Intent.ACTION_SEND_MULTIPLE);
+//                emailDummyIntentRFC822.setType("message/rfc822");
+//                emailActivities = pm.queryIntentActivities(emailDummyIntentRFC822, 0);
+//            }
+//            if (null != emailActivities) {
+//                if (emailActivities.size() == 1) {
+//                    selectedEmailActivity = emailActivities.get(0);
+//                } else {
+//                    for (ResolveInfo currAvailableEmailActivity : emailActivities) {
+//                        if (currAvailableEmailActivity.isDefault) {
+//                            selectedEmailActivity = currAvailableEmailActivity;
+//                        }
+//                    }
+//                }
+//
+//                if (null != selectedEmailActivity) {
+//                    sendEmailUsingSelectedEmailApp(toList, selectedEmailActivity);
+//                } else {
+//                    final List<ResolveInfo> emailActivitiesForDialog = emailActivities;
+//                    String[] availableEmailAppsName = new String[emailActivitiesForDialog.size()];
+//                    for (int i = 0; i < emailActivitiesForDialog.size(); i++) {
+//                        availableEmailAppsName[i] = emailActivitiesForDialog.get(i).activityInfo.applicationInfo.loadLabel(pm).toString();
+//                    }
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                    builder.setTitle("Please select Email Client");
+//                    builder.setItems(availableEmailAppsName, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            sendEmailUsingSelectedEmailApp(toList, emailActivitiesForDialog.get(which));
+//                        }
+//                    });
+//                    builder.create().show();
+//                }
+//            } else {
+//                sendEmailUsingSelectedEmailApp(toList, null);
+//            }
+//        } catch (Exception ex) {
+//            Log.e(TAG, "Can't send email", ex);
+//        }
+//    }
 
-    public void sendEmail(final String toList[]) {
-        try {
-            PackageManager pm = this.getPackageManager();
-            ResolveInfo selectedEmailActivity = null;
+//    private void sendEmailUsingSelectedEmailApp(String aEmailList[], ResolveInfo p_selectedEmailApp) {
+//        try {
+//
+//            String confID = PreferenceManager.getInstance(this).getConfID();
+//            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//            StrictMode.setVmPolicy(builder.build());
+//
+//            Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+//
+//            emailIntent.putExtra(Intent.EXTRA_EMAIL, aEmailList);
+//            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Summary for Conference " + confID);
+//            emailIntent.putExtra(Intent.EXTRA_TEXT, body());
+//
+//            ArrayList<Uri> attachmentsUris = new ArrayList<>();
+//
+//            File fileIn = new File(Utility.filePath());
+//            Uri currAttachemntUri = Uri.fromFile(fileIn);
+//            attachmentsUris.add(currAttachemntUri);
+//            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, attachmentsUris);
+//
+//            if (null != p_selectedEmailApp) {
+//                Log.d(TAG, "Sending email using " + p_selectedEmailApp);
+//                emailIntent.setComponent(new ComponentName(p_selectedEmailApp.activityInfo.packageName, p_selectedEmailApp.activityInfo.name));
+//                this.startActivity(emailIntent);
+//            } else {
+//                Intent emailAppChooser = Intent.createChooser(emailIntent, "Select Email app");
+//                this.startActivity(emailAppChooser);
+//            }
+//        } catch (Exception ex) {
+//            Log.e(TAG, "Error sending email", ex);
+//        }
+//    }
 
-            Intent emailDummyIntent = new Intent(Intent.ACTION_SENDTO);
-            emailDummyIntent.setData(Uri.parse("mailto:test@gmail.com"));
-            List<ResolveInfo> emailActivities = pm.queryIntentActivities(emailDummyIntent, 0);
-            if (null == emailActivities || emailActivities.size() == 0) {
-                Intent emailDummyIntentRFC822 = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                emailDummyIntentRFC822.setType("message/rfc822");
-                emailActivities = pm.queryIntentActivities(emailDummyIntentRFC822, 0);
-            }
-            if (null != emailActivities) {
-                if (emailActivities.size() == 1) {
-                    selectedEmailActivity = emailActivities.get(0);
-                } else {
-                    for (ResolveInfo currAvailableEmailActivity : emailActivities) {
-                        if (currAvailableEmailActivity.isDefault) {
-                            selectedEmailActivity = currAvailableEmailActivity;
-                        }
-                    }
-                }
-
-                if (null != selectedEmailActivity) {
-                    sendEmailUsingSelectedEmailApp(toList, selectedEmailActivity);
-                } else {
-                    final List<ResolveInfo> emailActivitiesForDialog = emailActivities;
-                    String[] availableEmailAppsName = new String[emailActivitiesForDialog.size()];
-                    for (int i = 0; i < emailActivitiesForDialog.size(); i++) {
-                        availableEmailAppsName[i] = emailActivitiesForDialog.get(i).activityInfo.applicationInfo.loadLabel(pm).toString();
-                    }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Please select Email Client");
-                    builder.setItems(availableEmailAppsName, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            sendEmailUsingSelectedEmailApp(toList, emailActivitiesForDialog.get(which));
-                        }
-                    });
-                    builder.create().show();
-                }
-            } else {
-                sendEmailUsingSelectedEmailApp(toList, null);
-            }
-        } catch (Exception ex) {
-            Log.e(TAG, "Can't send email", ex);
-        }
-    }
-
-    private void sendEmailUsingSelectedEmailApp(String aEmailList[], ResolveInfo p_selectedEmailApp) {
-        try {
-
-            String confID = PreferenceManager.getInstance(this).getConfID();
-            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-            StrictMode.setVmPolicy(builder.build());
-
-            Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-
-            emailIntent.putExtra(Intent.EXTRA_EMAIL, aEmailList);
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Summary for Conference " + confID);
-            emailIntent.putExtra(Intent.EXTRA_TEXT, body());
-
-            ArrayList<Uri> attachmentsUris = new ArrayList<>();
-
-            File fileIn = new File(Utility.filePath());
-            Uri currAttachemntUri = Uri.fromFile(fileIn);
-            attachmentsUris.add(currAttachemntUri);
-            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, attachmentsUris);
-
-            if (null != p_selectedEmailApp) {
-                Log.d(TAG, "Sending email using " + p_selectedEmailApp);
-                emailIntent.setComponent(new ComponentName(p_selectedEmailApp.activityInfo.packageName, p_selectedEmailApp.activityInfo.name));
-                this.startActivity(emailIntent);
-            } else {
-                Intent emailAppChooser = Intent.createChooser(emailIntent, "Select Email app");
-                this.startActivity(emailAppChooser);
-            }
-        } catch (Exception ex) {
-            Log.e(TAG, "Error sending email", ex);
-        }
-    }
-
-    public String body() {
-        return "Dear User,\n\nThank you for attending the conference. Please find attached conference summary.\n\nRegards,\nAdroBuzz Team";
-    }
+//    public String body() {
+//        return "Dear User,\n\nThank you for attending the conference. Please find attached conference summary.\n\nRegards,\nAdroBuzz Team";
+//    }
 }

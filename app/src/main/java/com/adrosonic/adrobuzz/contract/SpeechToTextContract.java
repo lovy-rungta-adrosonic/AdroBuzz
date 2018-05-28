@@ -19,8 +19,9 @@ public interface SpeechToTextContract {
         void showError(String message);
         void finalConfStatus(int status);
         void confStatus(int status);
-        void showAttendeeList();
+//        void showAttendeeList();
         void leaveConfSuccess();
+        void showMessage(String message);
     }
 
     interface  Presenter{
@@ -28,15 +29,19 @@ public interface SpeechToTextContract {
         void endConference();
         void getConferenceStatus();
         void getConferenceStatusLogOut();
-        void getConferenceAttendees();
+//        void getConferenceAttendees();
         void leaveConference();
+        void sendMailAdmin();
+        void sendMailNonAdmin();
     }
 
     interface UseCase{
         void endConference(@NonNull EndConfCompletion completion);
         void getConferenceStatus(@NonNull Completion completion);
-        void getConferenceAttendees(@NonNull ConfAttendeesCompletion completion);
+//        void getConferenceAttendees(@NonNull ConfAttendeesCompletion completion);
         void leaveConference(@NonNull LeaveConfCompletion completion);
+        void sendMailAdmin(@NonNull SendMailCompletion completion);
+        void sendMailNonAdmin(@NonNull SendMailCompletion completion);
 
         interface Completion {
             void didReceiveResource(Resource<ConferenceStatus> resource);
@@ -46,13 +51,18 @@ public interface SpeechToTextContract {
             void didReceiveResource(Resource<ServiceResponse> resource);
         }
 
-        interface ConfAttendeesCompletion {
-            void didReceiveResource(Resource<ConfAttendees> resource);
-        }
+//        interface ConfAttendeesCompletion {
+//            void didReceiveResource(Resource<ConfAttendees> resource);
+//        }
 
         interface LeaveConfCompletion {
             void didReceiveResource(Resource<ServiceResponse> resource);
         }
+
+        interface SendMailCompletion {
+            void didReceiveResource(Resource<ServiceResponse> resource);
+        }
+
 
     }
 }

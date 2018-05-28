@@ -26,6 +26,7 @@ public class PreferenceManager {
     private static final String CONFERENCE_STATUS = "conference_status";
     private static final String EMAIL_SENT = "email_sent";
     private static final String CONFERENCE_SUMMARY = "conference_summary";
+    private static final String JOINEE_EMAIL= "joinee_email";
     private static final String JOINEE_USERNAME = "joinee_username";
     private static final String CONFERENCE_SUBJECT = "conference_subject";
     private static final String CONFERENCE_ATTENDEES_LIST = "conference_attendees_list";
@@ -256,6 +257,24 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = preferences(mContext);
         if (sharedPreferences != null) {
             return sharedPreferences.getString(JOINEE_USERNAME, "");
+        } else {
+            return "";
+        }
+    }
+
+    public void setJoineeEmail(String email) {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            sharedPreferences.edit()
+                    .putString(JOINEE_EMAIL, email)
+                    .apply();
+        }
+    }
+
+    public String getJoineeEmail() {
+        SharedPreferences sharedPreferences = preferences(mContext);
+        if (sharedPreferences != null) {
+            return sharedPreferences.getString(JOINEE_EMAIL, "");
         } else {
             return "";
         }

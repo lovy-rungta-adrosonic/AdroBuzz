@@ -149,27 +149,27 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter {
         });
     }
 
-    @Override
-    public void getConferenceAttendees() {
-        mInteractor.getConferenceAttendees(new SpeechToTextContract.UseCase.ConfAttendeesCompletion() {
-            @Override
-            public void didReceiveResource(Resource<ConfAttendees> resource) {
-                view.setLoadingIndicator(false);
-                switch (resource.status) {
-                    case LOADING:
-                        break;
-                    case ERROR:
-                        view.showError(resource.message);
-                        break;
-                    case SUCCESS:
-                        view.showAttendeeList();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-    }
+//    @Override
+//    public void getConferenceAttendees() {
+//        mInteractor.getConferenceAttendees(new SpeechToTextContract.UseCase.ConfAttendeesCompletion() {
+//            @Override
+//            public void didReceiveResource(Resource<ConfAttendees> resource) {
+//                view.setLoadingIndicator(false);
+//                switch (resource.status) {
+//                    case LOADING:
+//                        break;
+//                    case ERROR:
+//                        view.showError(resource.message);
+//                        break;
+//                    case SUCCESS:
+//                        view.showAttendeeList();
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public void leaveConference() {
@@ -185,6 +185,50 @@ public class SpeechToTextPresenter implements SpeechToTextContract.Presenter {
                         break;
                     case SUCCESS:
                         view.leaveConfSuccess();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void sendMailAdmin() {
+        mInteractor.sendMailAdmin(new SpeechToTextContract.UseCase.SendMailCompletion() {
+            @Override
+            public void didReceiveResource(Resource<ServiceResponse> resource) {
+                view.setLoadingIndicator(false);
+                switch (resource.status) {
+                    case LOADING:
+                        break;
+                    case ERROR:
+                        view.showError(resource.message);
+                        break;
+                    case SUCCESS:
+                        view.showMessage("Email has been sent successfully");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void sendMailNonAdmin() {
+        mInteractor.sendMailNonAdmin(new SpeechToTextContract.UseCase.SendMailCompletion() {
+            @Override
+            public void didReceiveResource(Resource<ServiceResponse> resource) {
+                view.setLoadingIndicator(false);
+                switch (resource.status) {
+                    case LOADING:
+                        break;
+                    case ERROR:
+                        view.showError(resource.message);
+                        break;
+                    case SUCCESS:
+                        view.showMessage("Email has been sent successfully");
                         break;
                     default:
                         break;

@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'adrobuzz'
+            keyPassword 'adrobuzz'
+            storeFile file('C:/Users/Lovy/keystores/adrobuzz.jks')
+            storePassword 'adrobuzz'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.adrosonic.adrobuzz"

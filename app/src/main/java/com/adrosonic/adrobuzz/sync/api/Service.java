@@ -9,10 +9,13 @@ import com.adrosonic.adrobuzz.model.ServiceResponse;
 
 import java.util.ArrayList;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 /**
@@ -42,6 +45,14 @@ public interface Service {
     @GET("getConferenceAttendes/{param}")
     Call<ConfAttendees> getConferenceAttende(@Path("param") String id);
 
-    @GET("leaveConference/{param1}/{param2}")
-    Call<ServiceResponse> leaveConference(@Path("param1") String id, @Path("param2") String email);
+    @GET("leaveConference/{param1}/{param2}/{param3}")
+    Call<ServiceResponse> leaveConference(@Path("param1") String id, @Path("param2") String email,@Path("param3") String username);
+
+    @Multipart
+    @POST("sendJoineeMail/{param1}/{param2}/{param3}")
+    Call<ServiceResponse> sendJoineeMail(@Path("param1") String id, @Path("param2") String username,@Path("param3") String email,@Part MultipartBody.Part text);
+
+    @Multipart
+    @POST("sendMail/{param1}")
+    Call<ServiceResponse> sendMail(@Path("param1") String id,@Part MultipartBody.Part text);
 }

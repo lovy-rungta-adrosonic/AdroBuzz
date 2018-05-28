@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.adrosonic.adrobuzz.Utils.PreferenceManager;
+import com.adrosonic.adrobuzz.Utils.Utility;
 import com.adrosonic.adrobuzz.contract.SpeechToTextContract;
 import com.adrosonic.adrobuzz.model.ConfAttendees.AttendeesData;
 import com.adrosonic.adrobuzz.model.ConfAttendees.ConfAttendees;
@@ -14,11 +15,15 @@ import com.adrosonic.adrobuzz.sync.api.Service;
 import com.adrosonic.adrobuzz.sync.network.AppExecutors;
 import com.adrosonic.adrobuzz.sync.network.Resource;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -184,87 +189,87 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
 
     }
 
-    @Override
-    public void getConferenceAttendees(final @NonNull ConfAttendeesCompletion completion) {
-        mExecutors.networkIO().execute(new Runnable() {
-            @Override
-            public void run() {
-
-                String confId = PreferenceManager.getInstance(mContext).getConfID();
-
-                mService.getConferenceAttende(confId).enqueue(new Callback<ConfAttendees>() {
-                    @Override
-                    public void onResponse(Call<ConfAttendees> call, final Response<ConfAttendees> response) {
-                        if (response.isSuccessful()) {
-
-                            final ConfAttendees body = response.body();
-                            if (body != null && body.getStatus() == 0) {
-                                Log.v(TAG, "getConferenceAttendees: success: \n" + body.getStatus());
-
-                                final ArrayList<String> emailList = new ArrayList<>();
-                                List<AttendeesData> listOfAttendees = body.getData();
-                                if (listOfAttendees.size() > 0) {
-                                    Iterator<AttendeesData> iterator = listOfAttendees.iterator();
-                                    while (iterator.hasNext()) {
-                                        AttendeesData data = iterator.next();
-                                        emailList.add(data.getEmail());
-                                    }
-                                    mExecutors.diskIO().execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                        PreferenceManager.getInstance(mContext).setConferenceAttendeesList(emailList);
-                                        }
-                                    });
-                                }
-                                mExecutors.mainThread().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        completion.didReceiveResource(Resource.success(body));
-                                    }
-                                });
-                            } else {
-
-                                mExecutors.mainThread().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ConfAttendees conf = null;
-                                        completion.didReceiveResource(Resource.error("Failed to getConferenceAttendees",
-                                                conf));
-                                    }
-                                });
-                            }
-
-                        } else {
-                            try {
-                                final String string = response.errorBody()
-                                        .string();
-                                Log.e(TAG, "getConferenceAttendees: errorBody: \n" + string);
-                            } catch (IOException | NullPointerException e) {
-                                Log.e(TAG, "getConferenceAttendees: errorBody: \n" + e.getMessage());
-                            }
-
-                            mExecutors.mainThread().execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ConfAttendees conf = null;
-                                    completion.didReceiveResource(Resource.error("Failed to getConferenceAttendees",
-                                            conf));
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ConfAttendees> call, Throwable t) {
-                        Log.e(TAG, "getConferenceAttendees: onFailure: \n", t);
-                        ConfAttendees conf = null;
-                        completion.didReceiveResource(Resource.error(t.getMessage(), conf));
-                    }
-                });
-            }
-        });
-
-    }
+//    @Override
+//    public void getConferenceAttendees(final @NonNull ConfAttendeesCompletion completion) {
+//        mExecutors.networkIO().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                String confId = PreferenceManager.getInstance(mContext).getConfID();
+//
+//                mService.getConferenceAttende(confId).enqueue(new Callback<ConfAttendees>() {
+//                    @Override
+//                    public void onResponse(Call<ConfAttendees> call, final Response<ConfAttendees> response) {
+//                        if (response.isSuccessful()) {
+//
+//                            final ConfAttendees body = response.body();
+//                            if (body != null && body.getStatus() == 0) {
+//                                Log.v(TAG, "getConferenceAttendees: success: \n" + body.getStatus());
+//
+//                                final ArrayList<String> emailList = new ArrayList<>();
+//                                List<AttendeesData> listOfAttendees = body.getData();
+//                                if (listOfAttendees.size() > 0) {
+//                                    Iterator<AttendeesData> iterator = listOfAttendees.iterator();
+//                                    while (iterator.hasNext()) {
+//                                        AttendeesData data = iterator.next();
+//                                        emailList.add(data.getEmail());
+//                                    }
+//                                    mExecutors.diskIO().execute(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            PreferenceManager.getInstance(mContext).setConferenceAttendeesList(emailList);
+//                                        }
+//                                    });
+//                                }
+//                                mExecutors.mainThread().execute(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        completion.didReceiveResource(Resource.success(body));
+//                                    }
+//                                });
+//                            } else {
+//
+//                                mExecutors.mainThread().execute(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        ConfAttendees conf = null;
+//                                        completion.didReceiveResource(Resource.error("Failed to getConferenceAttendees",
+//                                                conf));
+//                                    }
+//                                });
+//                            }
+//
+//                        } else {
+//                            try {
+//                                final String string = response.errorBody()
+//                                        .string();
+//                                Log.e(TAG, "getConferenceAttendees: errorBody: \n" + string);
+//                            } catch (IOException | NullPointerException e) {
+//                                Log.e(TAG, "getConferenceAttendees: errorBody: \n" + e.getMessage());
+//                            }
+//
+//                            mExecutors.mainThread().execute(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    ConfAttendees conf = null;
+//                                    completion.didReceiveResource(Resource.error("Failed to getConferenceAttendees",
+//                                            conf));
+//                                }
+//                            });
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ConfAttendees> call, Throwable t) {
+//                        Log.e(TAG, "getConferenceAttendees: onFailure: \n", t);
+//                        ConfAttendees conf = null;
+//                        completion.didReceiveResource(Resource.error(t.getMessage(), conf));
+//                    }
+//                });
+//            }
+//        });
+//
+//    }
 
     @Override
     public void leaveConference(final @NonNull LeaveConfCompletion completion) {
@@ -273,9 +278,10 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
             public void run() {
 
                 String confId = PreferenceManager.getInstance(mContext).getConfID();
-                String email = PreferenceManager.getInstance(mContext).getJoineeUsername();
+                String email = PreferenceManager.getInstance(mContext).getJoineeEmail();
+                String username = PreferenceManager.getInstance(mContext).getJoineeUsername();
 
-                mService.leaveConference(confId,email).enqueue(new Callback<ServiceResponse>() {
+                mService.leaveConference(confId, email, username).enqueue(new Callback<ServiceResponse>() {
                     @Override
                     public void onResponse(Call<ServiceResponse> call, final Response<ServiceResponse> response) {
                         if (response.isSuccessful()) {
@@ -330,5 +336,141 @@ public class SpeechToTextInteractor implements SpeechToTextContract.UseCase {
             }
         });
 
+    }
+
+    @Override
+    public void sendMailAdmin(final @NonNull SendMailCompletion completion) {
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                String confId = PreferenceManager.getInstance(mContext).getConfID();
+                File file = new File(Utility.filePath());
+                RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+                MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+
+                mService.sendMail(confId,fileToUpload ).enqueue(new Callback<ServiceResponse>() {
+                    @Override
+                    public void onResponse(Call<ServiceResponse> call, final Response<ServiceResponse> response) {
+                        if (response.isSuccessful()) {
+                            final ServiceResponse body = response.body();
+                            if (body != null && body.getStatus() == 0) {
+                                Log.v(TAG, "sendMailAdmin: success: \n" + body.getStatus());
+                                PreferenceManager.getInstance(mContext).setEmailSent(true);
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        completion.didReceiveResource(Resource.success(body));
+                                    }
+                                });
+                            } else {
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ServiceResponse conf = null;
+                                        completion.didReceiveResource(Resource.error(body.getError(),
+                                                conf));
+                                    }
+                                });
+                            }
+
+                        } else {
+                            try {
+                                final String string = response.errorBody()
+                                        .string();
+                                Log.e(TAG, "sendMailAdmin: errorBody: \n" + string);
+                            } catch (IOException | NullPointerException e) {
+                                Log.e(TAG, "sendMailAdmin: errorBody: \n" + e.getMessage());
+                            }
+
+                            mExecutors.mainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ServiceResponse conf = null;
+                                    completion.didReceiveResource(Resource.error("Failed to sendMailAdmin",
+                                            conf));
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ServiceResponse> call, Throwable t) {
+                        Log.e(TAG, "sendMailAdmin: onFailure: \n", t);
+                        ServiceResponse conf = null;
+                        completion.didReceiveResource(Resource.error(t.getMessage(), conf));
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void sendMailNonAdmin(final @NonNull SendMailCompletion completion) {
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                String confId = PreferenceManager.getInstance(mContext).getConfID();
+                String name = PreferenceManager.getInstance(mContext).getJoineeUsername();
+                String email = PreferenceManager.getInstance(mContext).getJoineeEmail();
+                File file = new File(Utility.filePath());
+                RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+                MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+
+                mService.sendJoineeMail(confId,name,email,fileToUpload ).enqueue(new Callback<ServiceResponse>() {
+                    @Override
+                    public void onResponse(Call<ServiceResponse> call, final Response<ServiceResponse> response) {
+                        if (response.isSuccessful()) {
+                            final ServiceResponse body = response.body();
+                            if (body != null && body.getStatus() == 0) {
+                                Log.v(TAG, "sendMailNonAdmin: success: \n" + body.getStatus());
+                                PreferenceManager.getInstance(mContext).setEmailSent(true);
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        completion.didReceiveResource(Resource.success(body));
+                                    }
+                                });
+                            } else {
+                                mExecutors.mainThread().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ServiceResponse conf = null;
+                                        completion.didReceiveResource(Resource.error(body.getError(),
+                                                conf));
+                                    }
+                                });
+                            }
+
+                        } else {
+                            try {
+                                final String string = response.errorBody()
+                                        .string();
+                                Log.e(TAG, "sendMailNonAdmin: errorBody: \n" + string);
+                            } catch (IOException | NullPointerException e) {
+                                Log.e(TAG, "sendMailNonAdmin: errorBody: \n" + e.getMessage());
+                            }
+
+                            mExecutors.mainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ServiceResponse conf = null;
+                                    completion.didReceiveResource(Resource.error("Failed to sendMailNonAdmin",
+                                            conf));
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ServiceResponse> call, Throwable t) {
+                        Log.e(TAG, "sendMailNonAdmin: onFailure: \n", t);
+                        ServiceResponse conf = null;
+                        completion.didReceiveResource(Resource.error(t.getMessage(), conf));
+                    }
+                });
+            }
+        });
     }
 }

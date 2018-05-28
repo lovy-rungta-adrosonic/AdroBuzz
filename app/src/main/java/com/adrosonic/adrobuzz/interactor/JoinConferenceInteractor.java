@@ -57,7 +57,8 @@ public class JoinConferenceInteractor implements JoinConferenceContract.UseCase 
                                             PreferenceManager.getInstance(mContext).setIsAdmin(false);
                                             PreferenceManager.getInstance(mContext).setConfID(confId);
                                             PreferenceManager.getInstance(mContext).setConferenceSubject(body.getData().getName());
-                                            PreferenceManager.getInstance(mContext).setJoineeUsername(request.getEmail());
+                                            PreferenceManager.getInstance(mContext).setJoineeEmail(request.getEmail());
+                                            PreferenceManager.getInstance(mContext).setJoineeUsername(request.getName());
                                         }
                                     });
                                     mExecutors.mainThread().execute(new Runnable() {
